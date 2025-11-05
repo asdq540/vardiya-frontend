@@ -1,115 +1,92 @@
 import React, { useState } from "react";
 
-function Form() {
+export default function VardiyaForm() {
   const [formData, setFormData] = useState({
     tarih: "",
-    vardiya: "1",
-    hat: "R1",
-    aciklamalar: Array(10).fill(""),
-    personel: "",
+    vardiya: "",
+    hat: "",
+    aciklamalar: Array.from({ length: 10 }, () => ({ aciklama: "", personel: "" })),
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAciklamaChange = (index, value) => {
-    const yeniAciklamalar = [...formData.aciklamalar];
-    yeniAciklamalar[index] = value;
-    setFormData({ ...formData, aciklamalar: yeniAciklamalar });
+  const handleChange = (index, field, value) => {
+    const newAciklamalar = [...formData.aciklamalar];
+    newAciklamalar[index][field] = value;
+    setFormData({ ...formData, aciklamalar: newAciklamalar });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    const data = await response.json();
-    alert(data.mesaj || data.hata);
+    try {
+      const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      alert(data.mesaj || data.hata);
+    } catch (err) {
+      alert("Bir hata oluştu: " + err.message);
+    }
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-6 shadow rounded-lg mt-10">
-      <h2 className="text-2xl font-bold mb-4 text-center">Vardiya Kayıt Formu</h2>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-2xl shadow-md">
+      <h1 className="text-xl font-semibold mb-4">Vardiya Kayıt Formu</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
-        {/* Tarih */}
-        <div>
-          <label className="block font-semibold">Tarih</label>
+        <div className="flex gap-3">
           <input
             type="date"
-            name="tarih"
             value={formData.tarih}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
+            onChange={(e) => setFormData({ ...formData, tarih: e.target.value })}
+            className="border p-2 rounded w-1/3"
             required
           />
-        </div>
-
-        {/* Vardiya Seçimi */}
-        <div>
-          <label className="block font-semibold">Vardiya</label>
           <select
-            name="vardiya"
             value={formData.vardiya}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
+            onChange={(e) => setFormData({ ...formData, vardiya: e.target.value })}
+            className="border p-2 rounded w-1/3"
+            required
           >
+            <option value="">Vardiya Seç</option>
             <option value="1">1. Vardiya</option>
             <option value="2">2. Vardiya</option>
             <option value="3">3. Vardiya</option>
             <option value="4">4. Vardiya</option>
           </select>
-        </div>
-
-        {/* Hat Seçimi */}
-        <div>
-          <label className="block font-semibold">Hat No</label>
           <select
-            name="hat"
             value={formData.hat}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
+            onChange={(e) => setFormData({ ...formData, hat: e.target.value })}
+            className="border p-2 rounded w-1/3"
+            required
           >
+            <option value="">Hat Seç</option>
             <option value="R1">R1</option>
             <option value="R2">R2</option>
             <option value="R3">R3</option>
           </select>
         </div>
 
-        {/* Açıklamalar */}
-        <div>
-          <label className="block font-semibold mb-2">Açıklamalar (10 adet)</label>
-          {formData.aciklamalar.map((aciklama, index) => (
+        <h2 className="font-semibold mt-4 mb-2">Açıklamalar ve İlgili Personeller</h2>
+
+        {formData.aciklamalar.map((row, i) => (
+          <div key={i} className="flex gap-2 mb-2">
             <input
-              key={index}
               type="text"
-              value={aciklama}
-              onChange={(e) => handleAciklamaChange(index, e.target.value)}
-              className="border p-2 rounded w-full mb-2"
-              placeholder={`Açıklama ${index + 1}`}
+              placeholder={`Açıklama ${i + 1}`}
+              value={row.aciklama}
+              onChange={(e) => handleChange(i, "aciklama", e.target.value)}
+              className="flex-1 p-2 border rounded"
             />
-          ))}
-        </div>
+            <input
+              type="text"
+              placeholder="İlgili Personel"
+              value={row.personel}
+              onChange={(e) => handleChange(i, "personel", e.target.value)}
+              className="flex-1 p-2 border rounded"
+            />
+          </div>
+        ))}
 
-        {/* Personel */}
-        <div>
-          <label className="block font-semibold">İlgili Personel</label>
-          <input
-            type="text"
-            name="personel"
-            value={formData.personel}
-            onChange={handleChange}
-            className="border p-2 rounded w-full"
-            required
-          />
-        </div>
-
-        {/* Gönder Butonu */}
         <button
           type="submit"
           className="bg-blue-600 text-white py-2 rounded w-full hover:bg-blue-700 transition"
@@ -120,5 +97,3 @@ function Form() {
     </div>
   );
 }
-
-export default Form;
