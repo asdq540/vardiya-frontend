@@ -1,126 +1,156 @@
-import React, { useState } from "react";
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vardiya Formu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 30px;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 550px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #aciklamaListesi div {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    img.preview {
+      margin-top: 8px;
+      max-width: 150px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
 
-export default function KayitFormu() {
-  const [tarih, setTarih] = useState("");
-  const [vardiya, setVardiya] = useState("");
-  const [hat, setHat] = useState("");
-  const [aciklamalar, setAciklamalar] = useState([
-    { aciklama: "", personel: "", foto: "" },
-  ]);
-  const [loading, setLoading] = useState(false);
-  const [mesaj, setMesaj] = useState("");
+  <form id="vardiyaForm">
+    <h2>📋 Vardiya Kayıt Formu</h2>
 
-  // 📸 Fotoğrafı base64 string'e çevir
-  const handleFotoSec = (e, index) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    <label>Tarih:</label>
+    <input type="date" name="tarih" required>
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const updated = [...aciklamalar];
-      updated[index].foto = reader.result; // data:image/jpeg;base64,...
-      setAciklamalar(updated);
-    };
-    reader.readAsDataURL(file);
-  };
+    <label>Vardiya:</label>
+    <select name="vardiya" required>
+      <option value="">Seçiniz</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
 
-  // 💾 Form gönder
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMesaj("");
+    <label>Hat:</label>
+    <select name="hat" required>
+      <option value="">Seçiniz</option>
+      <option value="R1">R1</option>
+      <option value="R2">R2</option>
+      <option value="R3">R3</option>
+    </select>
 
-    const payload = { tarih, vardiya, hat, aciklamalar };
+    <h3>Açıklamalar:</h3>
+    <div id="aciklamaListesi">
+      <div>
+        <input type="text" placeholder="Açıklama" name="aciklama0">
+        <input type="text" placeholder="Personel" name="personel0">
+        <input type="file" accept="image/*" name="foto0" onchange="onFotoSec(event, 0)">
+        <img id="preview0" class="preview" style="display:none;">
+      </div>
+    </div>
 
-    try {
-      const res = await fetch("https://senin-api-urlin.vercel.app/api/kaydet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    <button type="button" onclick="yeniSatir()">+ Yeni Satır Ekle</button>
+    <button type="submit">Kaydet</button>
+  </form>
 
-      const data = await res.json();
-      if (res.ok) setMesaj(`✅ ${data.mesaj}`);
-      else setMesaj(`❌ ${data.hata || "Bilinmeyen hata"}`);
-    } catch (err) {
-      setMesaj("❌ Sunucuya bağlanılamadı: " + err.message);
+  <script>
+    let index = 1;
+    const fotoVerileri = {}; // her satırın base64 resimlerini tutacak
+
+    function yeniSatir() {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <input type="text" placeholder="Açıklama" name="aciklama${index}">
+        <input type="text" placeholder="Personel" name="personel${index}">
+        <input type="file" accept="image/*" name="foto${index}" onchange="onFotoSec(event, ${index})">
+        <img id="preview${index}" class="preview" style="display:none;">
+      `;
+      document.getElementById("aciklamaListesi").appendChild(div);
+      index++;
     }
 
-    setLoading(false);
-  };
+    function onFotoSec(e, i) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        fotoVerileri[i] = reader.result; // base64 string
+        const img = document.getElementById(`preview${i}`);
+        img.src = reader.result;
+        img.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
 
-  return (
-    <div style={{ maxWidth: 600, margin: "40px auto", padding: 20 }}>
-      <h2>📋 Üretim Formu</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Tarih:
-          <input type="date" value={tarih} onChange={(e) => setTarih(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Vardiya:
-          <input value={vardiya} onChange={(e) => setVardiya(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Hat:
-          <input value={hat} onChange={(e) => setHat(e.target.value)} required />
-        </label>
-        <hr />
+    document.getElementById("vardiyaForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-        {aciklamalar.map((item, index) => (
-          <div key={index} style={{ border: "1px solid #ddd", padding: 10, marginBottom: 10 }}>
-            <label>
-              Açıklama:
-              <input
-                value={item.aciklama}
-                onChange={(e) => {
-                  const updated = [...aciklamalar];
-                  updated[index].aciklama = e.target.value;
-                  setAciklamalar(updated);
-                }}
-              />
-            </label>
-            <br />
-            <label>
-              Personel:
-              <input
-                value={item.personel}
-                onChange={(e) => {
-                  const updated = [...aciklamalar];
-                  updated[index].personel = e.target.value;
-                  setAciklamalar(updated);
-                }}
-              />
-            </label>
-            <br />
-            <label>
-              Fotoğraf:
-              <input type="file" accept="image/*" onChange={(e) => handleFotoSec(e, index)} />
-            </label>
-            {item.foto && (
-              <div style={{ marginTop: 10 }}>
-                <img src={item.foto} alt="önizleme" width="150" />
-              </div>
-            )}
-          </div>
-        ))}
+      const formData = new FormData(e.target);
+      const tarih = formData.get("tarih");
+      const vardiya = formData.get("vardiya");
+      const hat = formData.get("hat");
 
-        <button
-          type="button"
-          onClick={() => setAciklamalar([...aciklamalar, { aciklama: "", personel: "", foto: "" }])}
-        >
-          + Yeni Satır Ekle
-        </button>
+      const aciklamalar = [];
+      for (let i = 0; i < index; i++) {
+        const aciklama = formData.get(`aciklama${i}`);
+        const personel = formData.get(`personel${i}`);
+        const foto = fotoVerileri[i] || "";
+        if (aciklama || personel || foto) {
+          aciklamalar.push({ aciklama, personel, foto });
+        }
+      }
 
-        <br />
-        <button type="submit" disabled={loading} style={{ marginTop: 20 }}>
-          {loading ? "Kaydediliyor..." : "Kaydet"}
-        </button>
-      </form>
+      const payload = { tarih, vardiya, hat, aciklamalar };
 
-      {mesaj && <p style={{ marginTop: 20 }}>{mesaj}</p>}
-    </div>
-  );
-}
+      try {
+        const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        alert(result.mesaj || result.hata || "Bilinmeyen hata!");
+      } catch (err) {
+        alert("Sunucuya bağlanılamadı: " + err.message);
+      }
+    });
+  </script>
+
+</body>
+</html>
