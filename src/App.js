@@ -1,116 +1,108 @@
-import React, { useState } from "react";
-import "./index.css";
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import gspread
+from google.oauth2.service_account import Credentials
+import json
+import os
+import base64
+import requests
+import traceback
 
-function App() {
-  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
-  const [aciklamalar, setAciklamalar] = useState([
-    { id: Date.now(), aciklama: "", personel: "", foto: "" }
-  ]);
+app = Flask(__name__)
+CORS(app)  # Frontend'den gelen isteklere izin ver
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+# Google API yetki alanları
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-  const handleAciklamaChange = (id, field, value) => {
-    setAciklamalar(prev =>
-      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
-    );
-  };
+# Google kimlik bilgilerini al
+def get_creds():
+    creds_json = os.environ.get("GOOGLE_SHEETS_CREDENTIALS_JSON")
+    if not creds_json:
+        raise Exception("GOOGLE_SHEETS_CREDENTIALS_JSON bulunamadı.")
+    creds_dict = json.loads(creds_json)
+    return Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
-  const handleFotoSec = (id, e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 1024 * 1024) {
-      alert("Lütfen 1 MB altı bir fotoğraf seçin.");
-      e.target.value = "";
-      return;
-    }
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setAciklamalar(prev => prev.map(it => it.id === id ? { ...it, foto: reader.result } : it));
-    };
-    reader.readAsDataURL(file);
-  };
+# Google Sheets bağlantısı
+def get_sheet():
+    creds = get_creds()
+    client = gspread.authorize(creds)
+    spreadsheet_id = os.environ.get("SPREADSHEET_ID")
+    if not spreadsheet_id:
+        raise Exception("SPREADSHEET_ID bulunamadı.")
+    sh = client.open_by_key(spreadsheet_id)
+    return sh.worksheet("Sayfa1")
 
-  const yeniSatir = () => {
-    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "" };
-    setAciklamalar(prev => [...prev, newRow]);
-    // odaklama veya scroll eklenebilir
-  };
+# ImgBB'ye fotoğraf yükle
+def upload_to_imgbb(base64_data, file_name):
+    try:
+        api_key = os.environ.get("IMGBB_API_KEY")
+        if not api_key:
+            raise Exception("IMGBB_API_KEY bulunamadı.")
 
-  const satirSil = (id) => {
-    setAciklamalar(prev => prev.filter(it => it.id !== id));
-  };
+        if not base64_data.startswith("data:image"):
+            print("⚠️ Geçersiz resim formatı atlandı.")
+            return None
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = { ...formData, aciklamalar };
-    try {
-      const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json();
-      alert(result.mesaj || result.hata || "Bilinmeyen hata!");
-    } catch (err) {
-      alert("Sunucuya bağlanılamadı: " + err.message);
-    }
-  };
+        image_bytes = base64_data.split(",")[1]
+        payload = {
+            "key": api_key,
+            "image": image_bytes,
+            "name": file_name
+        }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex justify-center items-center p-6">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg">
-        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">📋 Vardiya Kayıt Formu</h2>
+        response = requests.post("https://api.imgbb.com/1/upload", data=payload)
+        print("Status code:", response.status_code)
+        print("Response text:", response.text)
 
-        <label>Tarih:</label>
-        <input type="date" name="tarih" value={formData.tarih} onChange={handleChange} required />
+        data = response.json()
+        if data.get("success"):
+            file_url = data["data"]["url"]
+            print(f"✅ Fotoğraf yüklendi: {file_url}")
+            return file_url
+        else:
+            print("🚨 ImgBB Error:", data.get("error", {}).get("message"))
+            return None
+    except Exception:
+        print("🚨 Fotoğraf yüklenemedi:")
+        traceback.print_exc()
+        return None
 
-        <label>Vardiya:</label>
-        <select name="vardiya" value={formData.vardiya} onChange={handleChange} required>
-          <option value="">Seçiniz</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-        </select>
+# API: Sheets'e verileri kaydet
+@app.route("/api/kaydet", methods=["POST"])
+def kaydet():
+    try:
+        data = request.get_json()
+        tarih = data.get("tarih")
+        vardiya = data.get("vardiya")
+        hat = data.get("hat")
+        aciklamalar = data.get("aciklamalar", [])
 
-        <label>Hat:</label>
-        <select name="hat" value={formData.hat} onChange={handleChange} required>
-          <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
-        </select>
+        ws = get_sheet()
+        rows_to_add = []
 
-        <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
+        for i, item in enumerate(aciklamalar):
+            aciklama = item.get("aciklama", "").strip()
+            personel = item.get("personel", "").strip()
+            foto_data = item.get("foto", "")
 
-        {aciklamalar.map((item) => (
-          <div key={item.id} className="bg-gray-50 border p-4 rounded-xl mb-4">
-            <input
-              type="text"
-              placeholder="Açıklama"
-              value={item.aciklama}
-              onChange={(e) => handleAciklamaChange(item.id, "aciklama", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Personel"
-              value={item.personel}
-              onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
-            />
-            <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} />
-            {item.foto && <img src={item.foto} alt="Önizleme" style={{ maxWidth: 150, marginTop: 8 }} />}
-            <div style={{ marginTop: 8 }}>
-              <button type="button" onClick={() => satirSil(item.id)} style={{ marginRight: 8 }}>
-                Satırı Sil
-              </button>
-            </div>
-          </div>
-        ))}
+            foto_url = ""
+            if foto_data:
+                file_name = f"{tarih}_{vardiya}_{hat}_{i+1}"
+                foto_url = upload_to_imgbb(foto_data, file_name) or "Fotoğraf yüklenemedi"
 
-        {/* ÖNEMLİ: type="button" olmalı, aksi halde form submit olur */}
-        <button type="button" onClick={yeniSatir} className="bg-orange-500 text-white px-4 py-2 rounded-lg w-full mt-2">
-          + Yeni Satır Ekle
-        </button>
+            if aciklama or personel or foto_url:
+                rows_to_add.append([tarih, vardiya, hat, aciklama, personel, foto_url])
 
-        <button type="submit" className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mt-4">
-          Kaydet
-        </button>
-      </form>
-    </div>
-  );
-}
+        if rows_to_add:
+            ws.append_rows(rows_to_add, value_input_option="RAW")
 
-export default App;
+        return jsonify({"mesaj": "Veriler başarıyla eklendi!"}), 200
+
+    except Exception as e:
+        print("❌ Genel hata:")
+        traceback.print_exc()
+        return jsonify({"hata": str(e)}), 500
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
