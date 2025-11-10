@@ -18,11 +18,14 @@ function App() {
   const handleFotoSec = (id, e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { // 10 MB
-  alert("Lütfen 10 MB altı bir fotoğraf seçin.");
-  e.target.value = "";
-  return;
-}
+
+    // 10 MB sınır
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Lütfen 10 MB altı bir fotoğraf seçin.");
+      e.target.value = "";
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setAciklamalar(prev => prev.map(it => it.id === id ? { ...it, foto: reader.result } : it));
@@ -33,7 +36,6 @@ function App() {
   const yeniSatir = () => {
     const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "" };
     setAciklamalar(prev => [...prev, newRow]);
-    // odaklama veya scroll eklenebilir
   };
 
   const satirSil = (id) => {
@@ -66,12 +68,19 @@ function App() {
 
         <label>Vardiya:</label>
         <select name="vardiya" value={formData.vardiya} onChange={handleChange} required>
-          <option value="">Seçiniz</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+          <option value="">Seçiniz</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
         </select>
 
         <label>Hat:</label>
         <select name="hat" value={formData.hat} onChange={handleChange} required>
-          <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
+          <option value="">Seçiniz</option>
+          <option value="R1">R1</option>
+          <option value="R2">R2</option>
+          <option value="R3">R3</option>
         </select>
 
         <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
@@ -100,7 +109,6 @@ function App() {
           </div>
         ))}
 
-        {/* ÖNEMLİ: type="button" olmalı, aksi halde form submit olur */}
         <button type="button" onClick={yeniSatir} className="bg-orange-500 text-white px-4 py-2 rounded-lg w-full mt-2">
           + Yeni Satır Ekle
         </button>
