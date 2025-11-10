@@ -4,7 +4,7 @@ import "./index.css";
 function App() {
   const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
-    { id: Date.now(), aciklama: "", personel: "", foto: "" }
+    { id: Date.now(), aciklama: "", personel: "", foto: "", adet: 1 }
   ]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,8 +19,7 @@ function App() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 10 MB sınır
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) { // 10 MB sınır
       alert("Lütfen 10 MB altı bir fotoğraf seçin.");
       e.target.value = "";
       return;
@@ -34,7 +33,7 @@ function App() {
   };
 
   const yeniSatir = () => {
-    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "" };
+    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "", adet: 1 };
     setAciklamalar(prev => [...prev, newRow]);
   };
 
@@ -44,7 +43,18 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...formData, aciklamalar };
+
+    // payload oluştururken adet kadar çoğalt
+    const payloadAciklamalar = [];
+    aciklamalar.forEach(item => {
+      const adet = parseInt(item.adet) || 1;
+      for (let i = 0; i < adet; i++) {
+        payloadAciklamalar.push({ ...item, adet: undefined }); // adet alanını gönderme
+      }
+    });
+
+    const payload = { ...formData, aciklamalar: payloadAciklamalar };
+
     try {
       const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
         method: "POST",
@@ -63,11 +73,25 @@ function App() {
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg">
         <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">📋 Vardiya Kayıt Formu</h2>
 
-        <label>Tarih:</label>
-        <input type="date" name="tarih" value={formData.tarih} onChange={handleChange} required />
+        {/* Tarih, Vardiya, Hat kısmı 2 katı boyutta */}
+        <label className="font-semibold mt-4">Tarih:</label>
+        <input
+          className="text-2xl p-4"
+          type="date"
+          name="tarih"
+          value={formData.tarih}
+          onChange={handleChange}
+          required
+        />
 
-        <label>Vardiya:</label>
-        <select name="vardiya" value={formData.vardiya} onChange={handleChange} required>
+        <label className="font-semibold mt-4">Vardiya:</label>
+        <select
+          className="text-2xl p-4"
+          name="vardiya"
+          value={formData.vardiya}
+          onChange={handleChange}
+          required
+        >
           <option value="">Seçiniz</option>
           <option value="1">1</option>
           <option value="2">2</option>
@@ -75,15 +99,21 @@ function App() {
           <option value="4">4</option>
         </select>
 
-        <label>Hat:</label>
-        <select name="hat" value={formData.hat} onChange={handleChange} required>
+        <label className="font-semibold mt-4">Hat:</label>
+        <select
+          className="text-2xl p-4"
+          name="hat"
+          value={formData.hat}
+          onChange={handleChange}
+          required
+        >
           <option value="">Seçiniz</option>
           <option value="R1">R1</option>
           <option value="R2">R2</option>
           <option value="R3">R3</option>
         </select>
 
-        <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
+        <h3 className="text-lg font-semibold text-blue-500 mb-4 mt-6">Açıklamalar:</h3>
 
         {aciklamalar.map((item) => (
           <div key={item.id} className="bg-gray-50 border p-4 rounded-xl mb-4">
@@ -98,6 +128,13 @@ function App() {
               placeholder="Personel"
               value={item.personel}
               onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="Adet"
+              value={item.adet}
+              min="1"
+              onChange={(e) => handleAciklamaChange(item.id, "adet", e.target.value)}
             />
             <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} />
             {item.foto && <img src={item.foto} alt="Önizleme" style={{ maxWidth: 150, marginTop: 8 }} />}
