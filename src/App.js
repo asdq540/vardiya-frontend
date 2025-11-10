@@ -10,8 +10,8 @@
     input, select, button { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; }
     button { background: #007bff; color: white; cursor: pointer; }
     button:hover { background: #0056b3; }
-    #aciklamaListesi div { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
-    img.preview { margin-top: 8px; max-width: 150px; border-radius: 8px; border: 1px solid #ccc; }
+    #aciklamaListesi div { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; position: relative; }
+    img.preview { margin-top: 8px; max-width: 150px; border-radius: 8px; border: 1px solid #ccc; display: block; }
   </style>
 </head>
 <body>
@@ -38,7 +38,7 @@
 
     <h3>Açıklamalar:</h3>
     <div id="aciklamaListesi">
-      <div>
+      <div class="satir">
         <input type="text" placeholder="Açıklama" name="aciklama0">
         <input type="text" placeholder="Personel" name="personel0">
         <input type="file" accept="image/*" name="foto0" onchange="onFotoSec(event, 0)">
@@ -52,10 +52,11 @@
 
   <script>
     let index = 1;
-    const fotoVerileri = {}; // her satırın base64 resimlerini tutacak
+    const fotoVerileri = {}; // Base64 resimleri saklamak için
 
     function yeniSatir() {
       const div = document.createElement("div");
+      div.className = "satir";
       div.innerHTML = `
         <input type="text" placeholder="Açıklama" name="aciklama${index}">
         <input type="text" placeholder="Personel" name="personel${index}">
@@ -70,7 +71,7 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      // Küçük resim ile test için 1MB altı önerilir
+      // Küçük resim uyarısı
       if (file.size > 1024 * 1024) {
         alert("Lütfen 1 MB altı bir fotoğraf seçin.");
         e.target.value = "";
@@ -80,9 +81,10 @@
       const reader = new FileReader();
       reader.onloadend = () => {
         fotoVerileri[i] = reader.result; // base64 string
+
         const img = document.getElementById(`preview${i}`);
         img.src = reader.result;
-        img.style.display = "block";
+        img.style.display = "block"; // preview görünür
       };
       reader.readAsDataURL(file);
     }
