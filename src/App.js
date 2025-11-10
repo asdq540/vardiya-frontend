@@ -5,73 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vardiya Formu</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      padding: 30px;
-    }
-    form {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 550px;
-      margin: auto;
-    }
-    input, select, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    #aciklamaListesi div {
-      margin-bottom: 15px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fafafa;
-    }
-    img.preview {
-      margin-top: 8px;
-      max-width: 150px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+    body { font-family: Arial; background-color: #f4f4f4; padding: 30px; }
+    form { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 550px; margin: auto; }
+    input, select, button { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; }
+    button { background: #007bff; color: white; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    #aciklamaListesi div { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+    img.preview { margin-top: 8px; max-width: 150px; border-radius: 8px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
 
   <form id="vardiyaForm">
     <h2>📋 Vardiya Kayıt Formu</h2>
-
     <label>Tarih:</label>
     <input type="date" name="tarih" required>
-
     <label>Vardiya:</label>
     <select name="vardiya" required>
-      <option value="">Seçiniz</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
+      <option value="">Seçiniz</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
     </select>
-
     <label>Hat:</label>
     <select name="hat" required>
-      <option value="">Seçiniz</option>
-      <option value="R1">R1</option>
-      <option value="R2">R2</option>
-      <option value="R3">R3</option>
+      <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
     </select>
 
     <h3>Açıklamalar:</h3>
@@ -90,7 +45,7 @@
 
   <script>
     let index = 1;
-    const fotoVerileri = {}; // her satırın base64 resimlerini tutacak
+    const fotoVerileri = {};
 
     function yeniSatir() {
       const div = document.createElement("div");
@@ -109,7 +64,7 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onloadend = () => {
-        fotoVerileri[i] = reader.result; // base64 string
+        fotoVerileri[i] = reader.result;
         const img = document.getElementById(`preview${i}`);
         img.src = reader.result;
         img.style.display = "block";
@@ -119,7 +74,6 @@
 
     document.getElementById("vardiyaForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const formData = new FormData(e.target);
       const tarih = formData.get("tarih");
       const vardiya = formData.get("vardiya");
@@ -151,6 +105,5 @@
       }
     });
   </script>
-
 </body>
 </html>
