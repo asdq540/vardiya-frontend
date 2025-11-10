@@ -2,26 +2,20 @@ import React, { useState } from "react";
 import "./index.css";
 
 function App() {
-  const [formData, setFormData] = useState({
-    tarih: "",
-    vardiya: "",
-    hat: "",
-  });
+  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
-    { aciklama: "", personel: "", foto: "" },
+    { id: Date.now(), aciklama: "", personel: "", foto: "" }
   ]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleAciklamaChange = (id, field, value) => {
+    setAciklamalar(prev =>
+      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    );
   };
 
-  const handleAciklamaChange = (index, field, value) => {
-    const yeni = [...aciklamalar];
-    yeni[index][field] = value;
-    setAciklamalar(yeni);
-  };
-
-  const handleFotoSec = (index, e) => {
+  const handleFotoSec = (id, e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 1024 * 1024) {
@@ -29,24 +23,26 @@ function App() {
       e.target.value = "";
       return;
     }
-
     const reader = new FileReader();
     reader.onloadend = () => {
-      const yeni = [...aciklamalar];
-      yeni[index].foto = reader.result;
-      setAciklamalar(yeni);
+      setAciklamalar(prev => prev.map(it => it.id === id ? { ...it, foto: reader.result } : it));
     };
     reader.readAsDataURL(file);
   };
 
   const yeniSatir = () => {
-    setAciklamalar([...aciklamalar, { aciklama: "", personel: "", foto: "" }]);
+    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "" };
+    setAciklamalar(prev => [...prev, newRow]);
+    // odaklama veya scroll eklenebilir
+  };
+
+  const satirSil = (id) => {
+    setAciklamalar(prev => prev.filter(it => it.id !== id));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { ...formData, aciklamalar };
-
     try {
       const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
         method: "POST",
@@ -62,102 +58,54 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex justify-center items-center p-6">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg"
-      >
-        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">
-          📋 Vardiya Kayıt Formu
-        </h2>
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg">
+        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">📋 Vardiya Kayıt Formu</h2>
 
-        <label className="font-medium text-gray-700">Tarih:</label>
-        <input
-          type="date"
-          name="tarih"
-          value={formData.tarih}
-          onChange={handleChange}
-          required
-          className="w-full border border-gray-300 p-3 rounded-lg mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
-        />
+        <label>Tarih:</label>
+        <input type="date" name="tarih" value={formData.tarih} onChange={handleChange} required />
 
-        <label className="font-medium text-gray-700">Vardiya:</label>
-        <select
-          name="vardiya"
-          value={formData.vardiya}
-          onChange={handleChange}
-          required
-          className="w-full border border-gray-300 p-3 rounded-lg mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
-        >
-          <option value="">Seçiniz</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
+        <label>Vardiya:</label>
+        <select name="vardiya" value={formData.vardiya} onChange={handleChange} required>
+          <option value="">Seçiniz</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
         </select>
 
-        <label className="font-medium text-gray-700">Hat:</label>
-        <select
-          name="hat"
-          value={formData.hat}
-          onChange={handleChange}
-          required
-          className="w-full border border-gray-300 p-3 rounded-lg mb-6 focus:ring-2 focus:ring-blue-400 outline-none"
-        >
-          <option value="">Seçiniz</option>
-          <option value="R1">R1</option>
-          <option value="R2">R2</option>
-          <option value="R3">R3</option>
+        <label>Hat:</label>
+        <select name="hat" value={formData.hat} onChange={handleChange} required>
+          <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
         </select>
 
         <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
 
-        {aciklamalar.map((item, i) => (
-          <div
-            key={i}
-            className="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-4 shadow-sm"
-          >
+        {aciklamalar.map((item) => (
+          <div key={item.id} className="bg-gray-50 border p-4 rounded-xl mb-4">
             <input
               type="text"
               placeholder="Açıklama"
               value={item.aciklama}
-              onChange={(e) => handleAciklamaChange(i, "aciklama", e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-md mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+              onChange={(e) => handleAciklamaChange(item.id, "aciklama", e.target.value)}
             />
             <input
               type="text"
               placeholder="Personel"
               value={item.personel}
-              onChange={(e) => handleAciklamaChange(i, "personel", e.target.value)}
-              className="w-full border border-gray-300 p-2 rounded-md mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+              onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
             />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleFotoSec(i, e)}
-              className="w-full mb-2"
-            />
-            {item.foto && (
-              <img
-                src={item.foto}
-                alt="Önizleme"
-                className="mt-2 rounded-lg shadow-md max-w-[150px]"
-              />
-            )}
+            <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} />
+            {item.foto && <img src={item.foto} alt="Önizleme" style={{ maxWidth: 150, marginTop: 8 }} />}
+            <div style={{ marginTop: 8 }}>
+              <button type="button" onClick={() => satirSil(item.id)} style={{ marginRight: 8 }}>
+                Satırı Sil
+              </button>
+            </div>
           </div>
         ))}
 
-        <button
-          type="button"
-          onClick={yeniSatir}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg w-full mt-2"
-        >
+        {/* ÖNEMLİ: type="button" olmalı, aksi halde form submit olur */}
+        <button type="button" onClick={yeniSatir} className="bg-orange-500 text-white px-4 py-2 rounded-lg w-full mt-2">
           + Yeni Satır Ekle
         </button>
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg w-full mt-4"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mt-4">
           Kaydet
         </button>
       </form>
