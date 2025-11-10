@@ -1,219 +1,168 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vardiya Formu</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      padding: 40px;
+import React, { useState } from "react";
+import "./index.css";
+
+function App() {
+  const [formData, setFormData] = useState({
+    tarih: "",
+    vardiya: "",
+    hat: "",
+  });
+  const [aciklamalar, setAciklamalar] = useState([
+    { aciklama: "", personel: "", foto: "" },
+  ]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAciklamaChange = (index, field, value) => {
+    const yeni = [...aciklamalar];
+    yeni[index][field] = value;
+    setAciklamalar(yeni);
+  };
+
+  const handleFotoSec = (index, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 1024 * 1024) {
+      alert("Lütfen 1 MB altı bir fotoğraf seçin.");
+      e.target.value = "";
+      return;
     }
 
-    form {
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: auto;
-      transition: transform 0.3s ease;
-    }
-    form:hover {
-      transform: translateY(-5px);
-    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const yeni = [...aciklamalar];
+      yeni[index].foto = reader.result;
+      setAciklamalar(yeni);
+    };
+    reader.readAsDataURL(file);
+  };
 
-    h2 {
-      text-align: center;
-      color: #4a90e2;
-      margin-bottom: 25px;
-      font-size: 26px;
+  const yeniSatir = () => {
+    setAciklamalar([...aciklamalar, { aciklama: "", personel: "", foto: "" }]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const payload = { ...formData, aciklamalar };
+
+    try {
+      const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      alert(result.mesaj || result.hata || "Bilinmeyen hata!");
+    } catch (err) {
+      alert("Sunucuya bağlanılamadı: " + err.message);
     }
+  };
 
-    label {
-      font-weight: 600;
-      margin-top: 10px;
-      display: block;
-      color: #333;
-    }
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex justify-center items-center p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg"
+      >
+        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">
+          📋 Vardiya Kayıt Formu
+        </h2>
 
-    input, select {
-      width: 100%;
-      margin-top: 8px;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      transition: border 0.3s ease;
-    }
-    input:focus, select:focus {
-      border-color: #4a90e2;
-      outline: none;
-    }
+        <label className="font-medium text-gray-700">Tarih:</label>
+        <input
+          type="date"
+          name="tarih"
+          value={formData.tarih}
+          onChange={handleChange}
+          required
+          className="w-full border border-gray-300 p-3 rounded-lg mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
+        />
 
-    button {
-      width: 48%;
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+        <label className="font-medium text-gray-700">Vardiya:</label>
+        <select
+          name="vardiya"
+          value={formData.vardiya}
+          onChange={handleChange}
+          required
+          className="w-full border border-gray-300 p-3 rounded-lg mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
+        >
+          <option value="">Seçiniz</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
 
-    button#yeniSatir {
-      background: #ff7f50;
-      color: #fff;
-      margin-right: 4%;
-    }
-    button#yeniSatir:hover {
-      background: #ff5722;
-    }
+        <label className="font-medium text-gray-700">Hat:</label>
+        <select
+          name="hat"
+          value={formData.hat}
+          onChange={handleChange}
+          required
+          className="w-full border border-gray-300 p-3 rounded-lg mb-6 focus:ring-2 focus:ring-blue-400 outline-none"
+        >
+          <option value="">Seçiniz</option>
+          <option value="R1">R1</option>
+          <option value="R2">R2</option>
+          <option value="R3">R3</option>
+        </select>
 
-    button#kaydet {
-      background: #4a90e2;
-      color: #fff;
-    }
-    button#kaydet:hover {
-      background: #357abd;
-    }
+        <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
 
-    #aciklamaListesi div.satir {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 12px;
-      background: #f7f9fc;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.03);
-      position: relative;
-    }
+        {aciklamalar.map((item, i) => (
+          <div
+            key={i}
+            className="bg-gray-50 border border-gray-200 p-4 rounded-xl mb-4 shadow-sm"
+          >
+            <input
+              type="text"
+              placeholder="Açıklama"
+              value={item.aciklama}
+              onChange={(e) => handleAciklamaChange(i, "aciklama", e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded-md mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+            />
+            <input
+              type="text"
+              placeholder="Personel"
+              value={item.personel}
+              onChange={(e) => handleAciklamaChange(i, "personel", e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded-md mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleFotoSec(i, e)}
+              className="w-full mb-2"
+            />
+            {item.foto && (
+              <img
+                src={item.foto}
+                alt="Önizleme"
+                className="mt-2 rounded-lg shadow-md max-w-[150px]"
+              />
+            )}
+          </div>
+        ))}
 
-    img.preview {
-      margin-top: 10px;
-      max-width: 150px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: block;
-    }
+        <button
+          type="button"
+          onClick={yeniSatir}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg w-full mt-2"
+        >
+          + Yeni Satır Ekle
+        </button>
 
-    @media (max-width: 600px) {
-      button { width: 100%; margin: 10px 0 0 0; }
-    }
-  </style>
-</head>
-<body>
-
-  <form id="vardiyaForm">
-    <h2>📋 Vardiya Kayıt Formu</h2>
-
-    <label>Tarih:</label>
-    <input type="date" name="tarih" required>
-
-    <label>Vardiya:</label>
-    <select name="vardiya" required>
-      <option value="">Seçiniz</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-    </select>
-
-    <label>Hat:</label>
-    <select name="hat" required>
-      <option value="">Seçiniz</option>
-      <option value="R1">R1</option>
-      <option value="R2">R2</option>
-      <option value="R3">R3</option>
-    </select>
-
-    <h3 style="color:#4a90e2; margin-top:20px;">Açıklamalar:</h3>
-    <div id="aciklamaListesi">
-      <div class="satir">
-        <input type="text" placeholder="Açıklama" name="aciklama0">
-        <input type="text" placeholder="Personel" name="personel0">
-        <input type="file" accept="image/*" name="foto0" onchange="onFotoSec(event, 0)">
-        <img id="preview0" class="preview" style="display:none;">
-      </div>
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg w-full mt-4"
+        >
+          Kaydet
+        </button>
+      </form>
     </div>
+  );
+}
 
-    <button type="button" id="yeniSatir" onclick="yeniSatir()">+ Yeni Satır Ekle</button>
-    <button type="submit" id="kaydet">Kaydet</button>
-  </form>
-
-  <script>
-    let index = 1;
-    const fotoVerileri = {};
-
-    function yeniSatir() {
-      const div = document.createElement("div");
-      div.className = "satir";
-      div.innerHTML = `
-        <input type="text" placeholder="Açıklama" name="aciklama${index}">
-        <input type="text" placeholder="Personel" name="personel${index}">
-        <input type="file" accept="image/*" name="foto${index}" onchange="onFotoSec(event, ${index})">
-        <img id="preview${index}" class="preview" style="display:none;">
-      `;
-      document.getElementById("aciklamaListesi").appendChild(div);
-      index++;
-    }
-
-    function onFotoSec(e, i) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      if (file.size > 1024 * 1024) {
-        alert("Lütfen 1 MB altı bir fotoğraf seçin.");
-        e.target.value = "";
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        fotoVerileri[i] = reader.result;
-        const img = document.getElementById(`preview${i}`);
-        img.src = reader.result;
-        img.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById("vardiyaForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(e.target);
-      const tarih = formData.get("tarih");
-      const vardiya = formData.get("vardiya");
-      const hat = formData.get("hat");
-
-      const aciklamalar = [];
-      for (let i = 0; i < index; i++) {
-        const aciklama = formData.get(`aciklama${i}`);
-        const personel = formData.get(`personel${i}`);
-        const foto = fotoVerileri[i] || "";
-        if (aciklama || personel || foto) {
-          aciklamalar.push({ aciklama, personel, foto });
-        }
-      }
-
-      const payload = { tarih, vardiya, hat, aciklamalar };
-
-      try {
-        const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-        alert(result.mesaj || result.hata || "Bilinmeyen hata!");
-      } catch (err) {
-        alert("Sunucuya bağlanılamadı: " + err.message);
-      }
-    });
-  </script>
-
-</body>
-</html>
+export default App;
