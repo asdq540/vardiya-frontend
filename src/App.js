@@ -22,11 +22,18 @@
     <input type="date" name="tarih" required>
     <label>Vardiya:</label>
     <select name="vardiya" required>
-      <option value="">Seçiniz</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+      <option value="">Seçiniz</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
     </select>
     <label>Hat:</label>
     <select name="hat" required>
-      <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
+      <option value="">Seçiniz</option>
+      <option value="R1">R1</option>
+      <option value="R2">R2</option>
+      <option value="R3">R3</option>
     </select>
 
     <h3>Açıklamalar:</h3>
@@ -45,7 +52,7 @@
 
   <script>
     let index = 1;
-    const fotoVerileri = {};
+    const fotoVerileri = {}; // her satırın base64 resimlerini tutacak
 
     function yeniSatir() {
       const div = document.createElement("div");
@@ -62,9 +69,17 @@
     function onFotoSec(e, i) {
       const file = e.target.files[0];
       if (!file) return;
+
+      // Küçük resim ile test için 1MB altı önerilir
+      if (file.size > 1024 * 1024) {
+        alert("Lütfen 1 MB altı bir fotoğraf seçin.");
+        e.target.value = "";
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        fotoVerileri[i] = reader.result;
+        fotoVerileri[i] = reader.result; // base64 string
         const img = document.getElementById(`preview${i}`);
         img.src = reader.result;
         img.style.display = "block";
@@ -74,6 +89,7 @@
 
     document.getElementById("vardiyaForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const formData = new FormData(e.target);
       const tarih = formData.get("tarih");
       const vardiya = formData.get("vardiya");
@@ -105,5 +121,6 @@
       }
     });
   </script>
+
 </body>
 </html>
