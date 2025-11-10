@@ -18,11 +18,11 @@ function App() {
   const handleFotoSec = (id, e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 1024 * 1024) {
-      alert("Lütfen 1 MB altı bir fotoğraf seçin.");
-      e.target.value = "";
-      return;
-    }
+    if (file.size > 10 * 1024 * 1024) { // 10 MB
+  alert("Lütfen 10 MB altı bir fotoğraf seçin.");
+  e.target.value = "";
+  return;
+}
     const reader = new FileReader();
     reader.onloadend = () => {
       setAciklamalar(prev => prev.map(it => it.id === id ? { ...it, foto: reader.result } : it));
