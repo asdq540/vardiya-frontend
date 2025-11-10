@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 function App() {
-  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "", adet: 1 });
+  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
-    { id: Date.now(), aciklama: "", personel: "", foto: "" }
+    { id: Date.now(), aciklama: "", personel: "", foto: "", adet: 1 }
   ]);
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +27,7 @@ function App() {
   };
 
   const yeniSatir = () => {
-    setAciklamalar(prev => [...prev, { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "" }]);
+    setAciklamalar(prev => [...prev, { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: "", adet: 1 }]);
   };
 
   const satirSil = (id) => setAciklamalar(prev => prev.filter(item => item.id !== id));
@@ -66,9 +66,6 @@ function App() {
           <option value="">Seçiniz</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
         </select>
 
-        <label className="font-semibold mt-2">Adet:</label>
-        <input type="number" name="adet" min="1" value={formData.adet} onChange={handleChange} className="w-full h-14 px-3 border rounded-lg" />
-
         <h3 className="text-lg font-semibold text-blue-500 mt-4 mb-2">Açıklamalar:</h3>
         {aciklamalar.map(item => (
           <div key={item.id} className="bg-gray-50 p-4 rounded-xl mb-4 border">
@@ -84,6 +81,14 @@ function App() {
               placeholder="Personel"
               value={item.personel}
               onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
+              className="w-full mb-2 px-3 py-2 border rounded-lg"
+            />
+            <input
+              type="number"
+              min="1"
+              placeholder="Adet"
+              value={item.adet}
+              onChange={(e) => handleAciklamaChange(item.id, "adet", e.target.value)}
               className="w-full mb-2 px-3 py-2 border rounded-lg"
             />
             <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} />
