@@ -3,34 +3,29 @@ name: Deploy Frontend
 on:
   push:
     branches:
-      - main  # main branch'e pushlandığında çalışır
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Repo'yu checkout et
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Node.js kur
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3️⃣ Dependencies yükle
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ React build oluştur
       - name: Build project
         run: npm run build
 
-      # 5️⃣ GitHub Pages deploy
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PAT }}   # <--- kendi PAT token'in
           publish_dir: ./build
