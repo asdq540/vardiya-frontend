@@ -5,8 +5,9 @@ import "./index.css";
 function App() {
   const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
-    { id: Date.now(), aciklama: "", personel: "", foto: null, preview: "" }
+    { id: Date.now(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" }
   ]);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,7 +36,7 @@ function App() {
   };
 
   const yeniSatir = () => {
-    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", foto: null, preview: "" };
+    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" };
     setAciklamalar(prev => [...prev, newRow]);
   };
 
@@ -45,6 +46,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const aciklamalarPayload = await Promise.all(
       aciklamalar.map(async (item) => {
@@ -56,7 +58,7 @@ function App() {
             reader.readAsDataURL(item.foto);
           });
         }
-        return { ...item, foto: fotoBase64 };
+        return { ...item, foto: fotoBase64, adet: Number(item.adet) };
       })
     );
 
@@ -73,6 +75,8 @@ function App() {
     } catch (err) {
       alert("Sunucuya bağlanılamadı: " + err.message);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -117,6 +121,14 @@ function App() {
                 onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
                 className="border rounded-lg p-2 w-full"
               />
+              <input
+                type="number"
+                min="1"
+                placeholder="Adet"
+                value={item.adet}
+                onChange={(e) => handleAciklamaChange(item.id, "adet", e.target.value)}
+                className="border rounded-lg p-2 w-full"
+              />
               <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} className="w-full" />
               {item.preview && <img src={item.preview} alt="Önizleme" className="max-w-xs mt-2 rounded-lg" />}
               <button type="button" onClick={() => satirSil(item.id)} className="self-start bg-red-500 text-white px-3 py-1 rounded-lg mt-2">
@@ -130,8 +142,8 @@ function App() {
           + Yeni Satır Ekle
         </button>
 
-        <button type="submit" className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mt-4">
-          Kaydet
+        <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mt-4">
+          {loading ? "Kaydediliyor..." : "Kaydet"}
         </button>
       </form>
     </div>
