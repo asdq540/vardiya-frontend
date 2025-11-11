@@ -1,31 +1,37 @@
-name: Deploy Frontend
+name: Deploy React App to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # main branch'ine push olunca çalışacak
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Repo'yu çek
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Node.js kurulumu
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3. Bağımlılıkları yükle
       - name: Install dependencies
         run: npm install
 
+      # 4. React uygulamasını build et
       - name: Build project
         run: npm run build
 
+      # 5. Build klasörünü gh-pages branch'ine deploy et
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_PAT }}   # <--- kendi PAT token'in
+          github_token: ${{ secrets.GH_PAT }}  # Kendi Personal Access Token'ını kullan
           publish_dir: ./build
+          # opsiyonel: force: true   # eski deploy varsa üzerine yazmak için
