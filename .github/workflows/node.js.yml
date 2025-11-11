@@ -3,37 +3,30 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Ana branch'i izliyoruz
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Repo'yu checkout et
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Node.js yükle
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # 3️⃣ Bağımlılıkları yükle
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ React uygulamasını build et
-      - name: Build
+      - name: Build React App
         run: npm run build
 
-      # 5️⃣ GitHub Pages'e deploy et
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_PAT }}  # Secret olarak eklediğin token
+          github_token: ${{ secrets.GH_PAT }}
           publish_dir: ./build
-          # opsiyonel ayarlar:
-          # force_orphan: true  # İlk deploy’da orphan branch oluşturur
-          # keep_files: false   # Önceki dosyaları siler
+          # force_orphan: true  # ilk deploy için gerekirse aç
