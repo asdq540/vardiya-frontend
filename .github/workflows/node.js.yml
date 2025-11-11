@@ -19,20 +19,18 @@ jobs:
           node-version: 18
 
       - name: Clear old node_modules cache
-        run: rm -rf frontend/node_modules frontend/package-lock.json
+        run: rm -rf node_modules package-lock.json
 
       - name: Install dependencies
         run: npm install
-        working-directory: frontend
 
       - name: Build React app
         run: npm run build
-        working-directory: frontend
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_PAT }}
-          publish_dir: frontend/build
+          publish_dir: build
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
