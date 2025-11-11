@@ -48,8 +48,12 @@ function App() {
     e.preventDefault();
     setLoading(true);
 
+    // Her açıklama satırını "adet" kadar çoğalt
     const aciklamalarPayload = await Promise.all(
-      aciklamalar.map(async (item) => {
+      aciklamalar.flatMap(item => {
+        const adet = Number(item.adet) || 1;
+        return Array(adet).fill(null).map(() => ({ ...item }));
+      }).map(async (item) => {
         let fotoBase64 = "";
         if (item.foto) {
           const reader = new FileReader();
@@ -58,7 +62,7 @@ function App() {
             reader.readAsDataURL(item.foto);
           });
         }
-        return { ...item, foto: fotoBase64, adet: Number(item.adet) };
+        return { ...item, foto: fotoBase64, adet: 1 }; // Artık çoğaltıldığı için 1 olarak gönder
       })
     );
 
