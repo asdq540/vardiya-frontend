@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://asdq540.github.io/vardiya-frontend/",
+  "homepage": "https://asdq540.github.io/vardiya-frontend",
   "dependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
