@@ -1,16 +1,16 @@
-name: Deploy React App
+name: Deploy Frontend
 
 on:
   push:
     branches:
-      - main  # Ana branch’in adı
+      - main  # Deploy sadece main branch'e pushlandığında
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Repository'i çek
+      # 1️⃣ Repository'yi checkout et
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -18,18 +18,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # React 18 için uygun
-          cache: 'npm'
+          node-version: 18
+          cache: 'none'  # Cache kapalı, package-lock olmadan çalışır
 
-      # 3️⃣ Bağımlılıkları yükle
+      # 3️⃣ Dependencies yükle
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Build işlemi
-      - name: Build
+      # 4️⃣ Build oluştur
+      - name: Build project
         run: npm run build
 
-      # 5️⃣ GitHub Pages deploy
+      # 5️⃣ GitHub Pages veya başka deploy step'i ekleyebilirsin
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
