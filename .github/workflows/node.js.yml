@@ -3,7 +3,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Ana branch, değiştirilebilir
+      - main
 
 jobs:
   build-and-deploy:
@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      - name: Clear old node_modules cache
+        run: rm -rf frontend/node_modules frontend/package-lock.json
 
       - name: Install dependencies
         run: npm install
