@@ -3,18 +3,18 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # main branch'ine push olunca çalışacak
+      - main   # main branch'e push yapıldığında tetiklenir
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Repo'yu çek
+      # 1. Repo'yu checkout et
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Node.js kurulumu
+      # 2. Node.js kur
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,14 +24,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. React uygulamasını build et
-      - name: Build project
+      # 4. React app'i build et
+      - name: Build
         run: npm run build
 
-      # 5. Build klasörünü gh-pages branch'ine deploy et
+      # 5. Deploy işlemi
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_PAT }}  # Kendi Personal Access Token'ını kullan
-          publish_dir: ./build
-          # opsiyonel: force: true   # eski deploy varsa üzerine yazmak için
+          github_token: ${{ secrets.GH_PAT }}  # burada GH_PAT secret'ını kullanıyoruz
+          publish_dir: ./build               # React build sonucu oluşan dizin
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
