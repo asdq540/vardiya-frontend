@@ -3,31 +3,31 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Deploy etmek istediğin ana branch
+      - main  # Ana branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Repo'yu checkout et
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Node.js kurulumu
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # React 18 için uygun
+          node-version: '18'
 
-      # 3️⃣ Bağımlılıkları yükle
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ React uygulamasını build et
       - name: Build
         run: npm run build
 
-      # 5️⃣ GitHub Pages'a deploy et
+      - name: Configure Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Deploy
         run: npm run deploy
