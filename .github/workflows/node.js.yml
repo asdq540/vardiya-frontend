@@ -18,6 +18,11 @@ jobs:
         with:
           node-version: 18
 
+      - name: Clean old dependencies & build
+        run: |
+          rm -rf frontend/node_modules
+          rm -rf frontend/build
+
       - name: Install dependencies
         run: npm install
         working-directory: ./frontend
