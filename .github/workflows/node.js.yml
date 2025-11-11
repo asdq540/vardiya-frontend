@@ -30,11 +30,7 @@ jobs:
       - name: Build React app
         run: npm run build
         working-directory: ./frontend
-        
-        - name: Disable npm cache
-  run: npm config set cache /tmp/empty-cache
-
-
+  
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
