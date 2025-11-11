@@ -17,5 +17,4 @@
 }
 "dependencies": {
   "browser-image-compression": "^2.0.0",
-  ...
 }
