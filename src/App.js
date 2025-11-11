@@ -2,6 +2,235 @@ import React, { useState } from "react";
 import imageCompression from "browser-image-compression";
 import "./index.css";
 
+const aciklamaSecenekleri = [
+  "4 yollu izolasyon açık",
+  "4 yollu izolasyon eksik",
+  "4 yollu izolasyon yanık",
+  "4 yollu izolasyon yanlış",
+  "4 Yollu Kaçak",
+  "4 Yollu vidası eksik",
+  "4 yollu vidası oturmamış",
+  "Alt şase izolasyon eksik",
+  "Alt şase vida eksik",
+  "Alt şase vidası oturmamış",
+  "Alt şase yamuk",
+  "Anakart içinden vida çıktı",
+  "Anakart işaretleme yok",
+  "Anakart izolasyon eksik",
+  "Anakart kablo klips eksik",
+  "anakart kabloları takılmamış",
+  "Anakart kapak eksik",
+  "Anakart Nüvesi Yok",
+  "Anakart oturmamış",
+  "Anakart Sensör Soketi Kırık",
+  "Anakart tapası eksik",
+  "Anakart Topraklama Vidası Yok",
+  "Anakart Vidası Eksik",
+  "Anakart vidası oturmamış",
+  "Anakart Yanlış Geldi",
+  "ara bölme folyo yok",
+  "ara bölme izolasyon eksik",
+  "ara bölme izolasyon yarım",
+  "Ara bölme izolasyon yırtık",
+  "Ara bölme oturmamış",
+  "Ara bölme sacı eksik",
+  "Ara bölme tırnak kırık",
+  "Ara bölme vida oturmamış",
+  "Ara bölme vidası eksik",
+  "Ara bölme vidası yanlış",
+  "Bakır boru çatlak",
+  "Braket Vidaları Gevşek",
+  "Braket vidası atılmamış",
+  "Denge Ağırlığı Eksik",
+  "Devre Şema Yanlış Takılmış",
+  "Devre şeması eksik",
+  "Dikkat Etiketi Eksik",
+  "Exp Gri Sünger İzolasyon Yanık",
+  "Exp.  Takılmamış",
+  "Exp. İzolasyon açık",
+  "Exp. İzolasyon eksik",
+  "Exp. izolasyon Yanlış Takılmış",
+  "Exp. Kablosu klips yok",
+  "Exp. Kablosu oturmamış",
+  "Exp. Kablosu soket kırık",
+  "Exp. Kablosu Takılmamış",
+  "Exp. Kablosu yanık",
+  "Exp. Motor klips eksik",
+  "Exp. Motor oturmamış",
+  "Exp. Motoru takılmamış",
+  "Exp. Vidası atılmamış",
+  "Exp.Motoru Yanlış Takılmış",
+  "Fan braket vidası eksik",
+  "Fan braket vidası yarım",
+  "Fan braketi vidası eksik",
+  "Fan destek sacı izolasyon eksik",
+  "Fan destek sacı oturmamış",
+  "Fan destek sacı pres hatalı",
+  "Fan destek sacı vidası eksik",
+  "fan kablo",
+  "Fan kablosu kırık",
+  "Fan kablosu klips eksik",
+  "Fan Kablosu Oturmamış",
+  "Fan Kablosu Takılmamış",
+  "Fan Kablosu Tırnağı Kırık",
+  "Fan Kırık",
+  "Fan motoru vidası eksik",
+  "Fan motoru vidası oturmamış",
+  "Fan sacı işaretleri yok",
+  "Fan sacı klips eksik",
+  "Fan sacı vidası eksik",
+  "Fan Sacı Vidası Yanlış",
+  "Fan somunu eksik",
+  "Fan somunu oturmamış",
+  "Fan takılmamış",
+  "Fikstür açık",
+  "Finler yanık",
+  "Folyo eksik",
+  "Gömlek açık",
+  "Gömlek Düğmesi Eksik",
+  "Gömlek yanlış",
+  "Gömlek Yırtık",
+  "Hava sensörü anakarta takılı değil",
+  "hava Sensörü eksik",
+  "hava Sensörü kırık",
+  "Hava sensörü oturmamış",
+  "Hps Kablosu oturmamış",
+  "Hps Kablosu Takılmamış",
+  "Izgara Enjeksiyon Hatası",
+  "Izgara kırık",
+  "Izgara oturmamış",
+  "Izgara vidası eksik",
+  "Izgara vidası oturmamış",
+  "Izgara vidası yalama",
+  "Izgara vidası yanlış",
+  "İç Gömlek Takılmamış",
+  "Kaynak izolasyon eksik",
+  "Keçe eksik",
+  "Keçe yanlış",
+  "kılcal boru klipsi takılmamış",
+  "Klemens vidası eksik",
+  "Klimanın içinde vida var",
+  "Komp kablosu soket kırık",
+  "Komp. Çıkış Sensörü Takılmamış",
+  "Komp. İzolasyon yanık",
+  "Komp. İzolasyonu Eksik",
+  "Komp. Kablosu klips eksik",
+  "Komp. Kablosu Nüve Kırık",
+  "Komp. Kablosu oturmamış",
+  "Komp. kablosu takılmamış",
+  "Komp. Kapağı eksik",
+  "Komp. Kapağı oturmamış",
+  "Komp. Lastiği Eksik",
+  "Komp. Oturmamış",
+  "Komp. Somun eksik",
+  "Komp. Somun oturmamış",
+  "Komp. Somunu işaretsiz",
+  "Kondenser Borusu ezik",
+  "Kondenser finler hasarlı",
+  "Kondenser izolasyon açık",
+  "Kondenser izolasyon eksik",
+  "Kondenser Kaçak",
+  "Kondenser Klips Eksik",
+  "Kondenser Klips yanlış montaj",
+  "Kondenser Sensör Yuvası Ezik",
+  "Kondenser sensör yuvası yok",
+  "Kondenser Vidası Eksik",
+  "Koruma teli eksik",
+  "Koruma teli oturmamış",
+  "Koruma teli vidası eksik",
+  "Marka etiketi eksik",
+  "Marka etiketi hatalı montaj",
+  "Marka etiketi yanlış",
+  "Marka etiketi yok",
+  "Ön Panel Boya Hatalı",
+  "Ön Panel Çizik",
+  "Ön panel darbeli",
+  "Ön panel izolasyon eksik",
+  "Ön panel oturmamış",
+  "Ön panel vida sıkılmamış",
+  "Ön panel vidası eksik",
+  "Ön panel yalama",
+  "Ön panel yanlış",
+  "Reaktör kablosu takılmamış",
+  "Reaktör kablosu yanlış takılmış",
+  "Reaktör vidası eksik",
+  "Rekorlar oturmamış",
+  "Rekorlar sıkılmamış",
+  "Sağ Panel Boya Hatalı",
+  "Sağ Panel Çizik",
+  "Sağ Panel Darbeli",
+  "Sağ Panel Eksik",
+  "Sağ Panel İzolasyon Eksik",
+  "Sağ panel oturmamış",
+  "Sağ Panel Plastik Aparatı Eksik",
+  "Sağ panel uyarı etiketi eksik",
+  "Sağ panel vidası eksik",
+  "Sağ panel vidası yarım",
+  "Sağ Panel Yalama",
+  "Selanoid bobin oturmamış",
+  "Selanoid bobin takılmamış",
+  "Selanoid bobin Vidası Atılmamış",
+  "selanoid bobin yanlış",
+  "Sensör Demiri Oturmamış",
+  "Sensör Demiri Takılmamış",
+  "Sensör Demiri Yok",
+  "Sensör Kablo Tırnağı Kırık",
+  "Sensör kablosu ezik",
+  "Sensör kablosu klips yok",
+  "Sensör kablosu oturmamış",
+  "Sensör kablosu takılmamış",
+  "Sensör klipsi takılmamış",
+  "Sensör Soketi Çıkık",
+  "sensör yayı yok",
+  "Sensör yuvası eksik",
+  "Sensör yuvası kaynak yapılmamış",
+  "Sensör yuvası takılmamış",
+  "Sol direk çizik",
+  "Sol direk oturmamış",
+  "Sol direk vida eksik",
+  "Sol direk vidası yanlış atılmış",
+  "Sol dirsek boya hatalı",
+  "Sol panel boya hatalı",
+  "Sol Panel Çizik",
+  "Sol panel darbeli",
+  "Sol panel eksik",
+  "Sol Panel İzolasyon Eksik",
+  "Sol panel oturmamış",
+  "Sol panel tutamaç eksik",
+  "Sol panel tutamaç kırık",
+  "Sol panel tutamaç oturmamış",
+  "Sol Panel Tutamaç vidası yarım",
+  "Sol panel tutamaç vidası yok",
+  "Sol Panel Vida Eksik",
+  "Sol panel vidaları yanlış",
+  "Sol Panel Vidası yarım",
+  "Stop valve oturmamış",
+  "Susturucu İzolasyon Eksik",
+  "Sünger izolasyon klips yok",
+  "Termik kablosu kırık",
+  "Termik kablosu klips yok",
+  "termik kablosu oturmamış",
+  "Termik Kablosu Takılmamış",
+  "Termik tırnağı oturmamış",
+  "Tutamaç ters takılmış",
+  "Uyarı etiketi eksik",
+  "Üst kapak boya hatalı",
+  "Üst Kapak Boya Hatası",
+  "Üst Kapak Çizik",
+  "Üst Kapak Darbeli",
+  "Üst kapak izolasyon dışarda",
+  "Üst kapak izolasyon eksik",
+  "üst kapak vidası eksik",
+  "üst kapak vidası oturmamış",
+  "Üst kapak vidası yanlış",
+  "Üst keçe eksik",
+  "Vana braketi vidası oturmamış",
+  "Vana Braketi yalama",
+  "Vana braketi yanlış",
+  "Vana Vidası Eksik",
+  "vana vidası yarım"
+];
+
 function App() {
   const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
@@ -22,7 +251,7 @@ function App() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const options = { maxSizeMB: 1, maxWidthOrHeight: 300, useWebWorker: true };
+    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 200, useWebWorker: true };
     const compressedFile = await imageCompression(file, options);
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -48,7 +277,6 @@ function App() {
     e.preventDefault();
     setLoading(true);
 
-    // Her açıklama satırını "adet" kadar çoğalt
     const aciklamalarPayload = await Promise.all(
       aciklamalar.flatMap(item => {
         const adet = Number(item.adet) || 1;
@@ -62,7 +290,7 @@ function App() {
             reader.readAsDataURL(item.foto);
           });
         }
-        return { ...item, foto: fotoBase64, adet: 1 }; // Artık çoğaltıldığı için 1 olarak gönder
+        return { ...item, foto: fotoBase64, adet: 1 };
       })
     );
 
@@ -111,13 +339,21 @@ function App() {
         <div className="flex flex-col gap-4">
           {aciklamalar.map((item) => (
             <div key={item.id} className="bg-gray-50 border p-4 rounded-xl flex flex-col gap-3">
+              {/* ComboBox */}
               <input
                 type="text"
+                list={`aciklama-list-${item.id}`}
                 placeholder="Açıklama"
                 value={item.aciklama}
                 onChange={(e) => handleAciklamaChange(item.id, "aciklama", e.target.value)}
                 className="border rounded-lg p-2 w-full"
               />
+              <datalist id={`aciklama-list-${item.id}`}>
+                {aciklamaSecenekleri.map((secenek, idx) => (
+                  <option key={idx} value={secenek} />
+                ))}
+              </datalist>
+
               <input
                 type="text"
                 placeholder="Personel"
@@ -125,6 +361,7 @@ function App() {
                 onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
                 className="border rounded-lg p-2 w-full"
               />
+
               <input
                 type="number"
                 min="1"
@@ -133,8 +370,10 @@ function App() {
                 onChange={(e) => handleAciklamaChange(item.id, "adet", e.target.value)}
                 className="border rounded-lg p-2 w-full"
               />
+
               <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} className="w-full" />
               {item.preview && <img src={item.preview} alt="Önizleme" className="max-w-xs mt-2 rounded-lg" />}
+
               <button type="button" onClick={() => satirSil(item.id)} className="self-start bg-red-500 text-white px-3 py-1 rounded-lg mt-2">
                 Satırı Sil
               </button>
