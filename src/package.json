@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "vardiya-frontend",
   "version": "1.0.0",
   "private": true,
   "homepage": "https://asdq540.github.io/vardiya-frontend",
@@ -8,7 +8,8 @@
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.0",
     "tailwindcss": "^3.0.0",
-    "browser-image-compression": "^2.0.0"
+    "browser-image-compression": "^2.0.0",
+    "gh-pages": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
