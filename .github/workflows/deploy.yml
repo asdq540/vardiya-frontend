@@ -3,7 +3,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Deploy etmek istediğin ana branch
+      - main
 
 jobs:
   build-and-deploy:
@@ -18,22 +18,25 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # React 18 için uygun
+          node-version: '18'
 
       # 3️⃣ Bağımlılıkları yükle
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ React uygulamasını build et
+      # 4️⃣ Build işlemi
       - name: Build
         run: npm run build
 
-      # 5️⃣ Git kullanıcı bilgilerini ayarla (gh-pages için gerekli)
+      # 5️⃣ Git kullanıcı bilgilerini ayarla (opsiyonel)
       - name: Configure Git user
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # 6️⃣ GitHub Pages'a deploy et
+      # 6️⃣ Deploy using GH_PAT
       - name: Deploy
-        run: npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          npx gh-pages -d build -r https://x-access-token:${GH_TOKEN}@github.com/<USERNAME>/<REPO>.git
