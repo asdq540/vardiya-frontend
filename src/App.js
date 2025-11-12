@@ -3,7 +3,8 @@ import imageCompression from "browser-image-compression";
 import "./index.css";
 
 const aciklamaSecenekleri = [
-  "4 yollu izolasyon açık",
+  // --- senin tüm açıklama listen burada aynı şekilde kalacak ---
+  "4 yollu izolasyon açık,
   "4 yollu izolasyon eksik",
   "4 yollu izolasyon yanık",
   "4 yollu izolasyon yanlış",
@@ -234,7 +235,7 @@ const aciklamaSecenekleri = [
 function App() {
   const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
   const [aciklamalar, setAciklamalar] = useState([
-    { id: Date.now(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" }
+    { id: Date.now(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" },
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -242,21 +243,20 @@ function App() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleAciklamaChange = (id, field, value) => {
-    setAciklamalar(prev =>
-      prev.map(item => (item.id === id ? { ...item, [field]: value } : item))
+    setAciklamalar((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
   const handleFotoSec = async (id, e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const options = { maxSizeMB: 0.5, maxWidthOrHeight: 200, useWebWorker: true };
     const compressedFile = await imageCompression(file, options);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setAciklamalar(prev =>
-        prev.map(it =>
+      setAciklamalar((prev) =>
+        prev.map((it) =>
           it.id === id ? { ...it, preview: reader.result, foto: file } : it
         )
       );
@@ -265,12 +265,19 @@ function App() {
   };
 
   const yeniSatir = () => {
-    const newRow = { id: Date.now() + Math.random(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" };
-    setAciklamalar(prev => [...prev, newRow]);
+    const newRow = {
+      id: Date.now() + Math.random(),
+      aciklama: "",
+      personel: "",
+      adet: 1,
+      foto: null,
+      preview: "",
+    };
+    setAciklamalar((prev) => [...prev, newRow]);
   };
 
   const satirSil = (id) => {
-    setAciklamalar(prev => prev.filter(it => it.id !== id));
+    setAciklamalar((prev) => prev.filter((it) => it.id !== id));
   };
 
   const handleSubmit = async (e) => {
@@ -278,75 +285,123 @@ function App() {
     setLoading(true);
 
     const aciklamalarPayload = await Promise.all(
-      aciklamalar.flatMap(item => {
-        const adet = Number(item.adet) || 1;
-        return Array(adet).fill(null).map(() => ({ ...item }));
-      }).map(async (item) => {
-        let fotoBase64 = "";
-        if (item.foto) {
-          const reader = new FileReader();
-          fotoBase64 = await new Promise(resolve => {
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(item.foto);
-          });
-        }
-        return { ...item, foto: fotoBase64, adet: 1 };
-      })
+      aciklamalar
+        .flatMap((item) => {
+          const adet = Number(item.adet) || 1;
+          return Array(adet)
+            .fill(null)
+            .map(() => ({ ...item }));
+        })
+        .map(async (item) => {
+          let fotoBase64 = "";
+          if (item.foto) {
+            const reader = new FileReader();
+            fotoBase64 = await new Promise((resolve) => {
+              reader.onloadend = () => resolve(reader.result);
+              reader.readAsDataURL(item.foto);
+            });
+          }
+          return { ...item, foto: fotoBase64, adet: 1 };
+        })
     );
 
     const payload = { ...formData, aciklamalar: aciklamalarPayload };
 
     try {
-      const response = await fetch("https://vardiya-backend.onrender.com/api/kaydet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://vardiya-backend.onrender.com/api/kaydet",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
       const result = await response.json();
       alert(result.mesaj || result.hata || "Bilinmeyen hata!");
     } catch (err) {
       alert("Sunucuya bağlanılamadı: " + err.message);
     }
-
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex justify-center items-center p-4">
-      <form onSubmit={handleSubmit} className="bg-white p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-lg">
-        <h2 className="text-2xl font-semibold text-blue-600 text-center mb-6">📋 Vardiya Kayıt Formu</h2>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 flex justify-center items-center p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl transition-all duration-300"
+      >
+        <h2 className="text-3xl font-bold text-blue-600 text-center mb-8">
+          📋 Vardiya Kayıt Formu
+        </h2>
 
-        <div className="flex flex-col gap-4 mb-4">
-          <label className="font-medium">Tarih:</label>
-          <input type="date" name="tarih" value={formData.tarih} onChange={handleChange} required className="border rounded-lg p-2 w-full" />
+        {/* Üst Bilgiler */}
+        <div className="grid md:grid-cols-3 gap-5 mb-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Tarih</label>
+            <input
+              type="date"
+              name="tarih"
+              value={formData.tarih}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+          </div>
 
-          <label className="font-medium">Vardiya:</label>
-          <select name="vardiya" value={formData.vardiya} onChange={handleChange} required className="border rounded-lg p-2 w-full">
-            <option value="">Seçiniz</option>
-            <option value="1">1</option><option value="2">2</option>
-            <option value="3">3</option><option value="4">4</option>
-          </select>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Vardiya</label>
+            <select
+              name="vardiya"
+              value={formData.vardiya}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+            >
+              <option value="">Seçiniz</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
 
-          <label className="font-medium">Hat:</label>
-          <select name="hat" value={formData.hat} onChange={handleChange} required className="border rounded-lg p-2 w-full">
-            <option value="">Seçiniz</option>
-            <option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option>
-          </select>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Hat</label>
+            <select
+              name="hat"
+              value={formData.hat}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+            >
+              <option value="">Seçiniz</option>
+              <option value="R1">R1</option>
+              <option value="R2">R2</option>
+              <option value="R3">R3</option>
+            </select>
+          </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-blue-500 mb-4">Açıklamalar:</h3>
+        {/* Açıklama Alanları */}
+        <h3 className="text-xl font-semibold text-blue-500 mb-4 border-b pb-2">
+          Açıklamalar
+        </h3>
 
-        <div className="flex flex-col gap-4">
+        <div className="space-y-5">
           {aciklamalar.map((item) => (
-            <div key={item.id} className="bg-gray-50 border p-4 rounded-xl flex flex-col gap-3">
-              {/* ComboBox */}
+            <div
+              key={item.id}
+              className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
+            >
               <input
                 type="text"
                 list={`aciklama-list-${item.id}`}
                 placeholder="Açıklama"
                 value={item.aciklama}
-                onChange={(e) => handleAciklamaChange(item.id, "aciklama", e.target.value)}
-                className="border rounded-lg p-2 w-full"
+                onChange={(e) =>
+                  handleAciklamaChange(item.id, "aciklama", e.target.value)
+                }
+                className="border border-gray-300 rounded-lg p-2 w-full mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
               />
               <datalist id={`aciklama-list-${item.id}`}>
                 {aciklamaSecenekleri.map((secenek, idx) => (
@@ -354,39 +409,100 @@ function App() {
                 ))}
               </datalist>
 
-              <input
-                type="text"
-                placeholder="Personel"
-                value={item.personel}
-                onChange={(e) => handleAciklamaChange(item.id, "personel", e.target.value)}
-                className="border rounded-lg p-2 w-full"
-              />
+              <div className="grid md:grid-cols-3 gap-3">
+                <input
+                  type="text"
+                  placeholder="Personel"
+                  value={item.personel}
+                  onChange={(e) =>
+                    handleAciklamaChange(item.id, "personel", e.target.value)
+                  }
+                  className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+                />
 
-              <input
-                type="number"
-                min="1"
-                placeholder="Adet"
-                value={item.adet}
-                onChange={(e) => handleAciklamaChange(item.id, "adet", e.target.value)}
-                className="border rounded-lg p-2 w-full"
-              />
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Adet"
+                  value={item.adet}
+                  onChange={(e) =>
+                    handleAciklamaChange(item.id, "adet", e.target.value)
+                  }
+                  className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+                />
 
-              <input type="file" accept="image/*" onChange={(e) => handleFotoSec(item.id, e)} className="w-full" />
-              {item.preview && <img src={item.preview} alt="Önizleme" className="max-w-xs mt-2 rounded-lg" />}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFotoSec(item.id, e)}
+                  className="w-full text-gray-600"
+                />
+              </div>
 
-              <button type="button" onClick={() => satirSil(item.id)} className="self-start bg-red-500 text-white px-3 py-1 rounded-lg mt-2">
+              {item.preview && (
+                <img
+                  src={item.preview}
+                  alt="Önizleme"
+                  className="mt-3 rounded-lg shadow-sm max-h-40 border"
+                />
+              )}
+
+              <button
+                type="button"
+                onClick={() => satirSil(item.id)}
+                className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition"
+              >
                 Satırı Sil
               </button>
             </div>
           ))}
         </div>
 
-        <button type="button" onClick={yeniSatir} className="bg-orange-500 text-white px-4 py-2 rounded-lg w-full mt-4">
+        {/* Yeni Satır ve Kaydet Butonları */}
+        <button
+          type="button"
+          onClick={yeniSatir}
+          className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition"
+        >
           + Yeni Satır Ekle
         </button>
 
-        <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-3 rounded-lg w-full mt-4">
-          {loading ? "Kaydediliyor..." : "Kaydet"}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full mt-4 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
+            loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {loading ? (
+            <>
+              <svg
+                className="animate-spin mr-2 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+              Kaydediliyor...
+            </>
+          ) : (
+            "Kaydet"
+          )}
         </button>
       </form>
     </div>
