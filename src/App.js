@@ -376,6 +376,7 @@ function App() {
               <option value="R1">R1</option>
               <option value="R2">R2</option>
               <option value="R3">R3</option>
+              <option value="AR1">AR1</option>
             </select>
           </div>
         </div>
