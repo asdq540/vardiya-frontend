@@ -4,7 +4,7 @@ import "./index.css";
 
 const aciklamaSecenekleri = [
 
-  "4 yollu izolasyon açık,
+  "4 yollu izolasyon açık",
   "4 yollu izolasyon eksik",
   "4 yollu izolasyon yanık",
   "4 yollu izolasyon yanlış",
