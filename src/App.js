@@ -3,8 +3,8 @@ import imageCompression from "browser-image-compression";
 import "./index.css";
 
 const aciklamaSecenekleri = [
-  // --- senin tüm açıklama listen burada aynı şekilde kalacak ---
-  "4 yollu izolasyon açık,
+
+  4 yollu izolasyon açık,
   "4 yollu izolasyon eksik",
   "4 yollu izolasyon yanık",
   "4 yollu izolasyon yanlış",
