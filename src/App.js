@@ -3,7 +3,6 @@ import imageCompression from "browser-image-compression";
 import "./index.css";
 
 const aciklamaSecenekleri = [
-
   "4 yollu izolasyon açık",
   "4 yollu izolasyon eksik",
   "4 yollu izolasyon yanık",
@@ -47,7 +46,7 @@ const aciklamaSecenekleri = [
   "Devre şeması eksik",
   "Dikkat Etiketi Eksik",
   "Exp Gri Sünger İzolasyon Yanık",
-  "Exp.  Takılmamış",
+  "Exp. Takılmamış",
   "Exp. İzolasyon açık",
   "Exp. İzolasyon eksik",
   "Exp. izolasyon Yanlış Takılmış",
@@ -393,6 +392,7 @@ function App() {
               key={item.id}
               className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
             >
+              {/* Açıklama alanı hem yazılabilir hem datalist ile */}
               <input
                 type="text"
                 list={`aciklama-list-${item.id}`}
@@ -423,7 +423,7 @@ function App() {
                 <input
                   type="number"
                   min="1"
-                  placeholder="Adet"
+                  placeholder="Hata Tekrar Sayısı"
                   value={item.adet}
                   onChange={(e) =>
                     handleAciklamaChange(item.id, "adet", e.target.value)
