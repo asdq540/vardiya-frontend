@@ -46,7 +46,7 @@ const aciklamaSecenekleri = [
   "Devre şeması eksik",
   "Dikkat Etiketi Eksik",
   "Exp Gri Sünger İzolasyon Yanık",
-  "Exp. Takılmamış",
+  "Exp.  Takılmamış",
   "Exp. İzolasyon açık",
   "Exp. İzolasyon eksik",
   "Exp. izolasyon Yanlış Takılmış",
@@ -324,17 +324,16 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 flex justify-center items-center p-6">
+    <div className="min-h-screen bg-gray-50 flex justify-center items-start py-10 px-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl transition-all duration-300"
+        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg space-y-6"
       >
-        <h2 className="text-3xl font-bold text-blue-600 text-center mb-8">
+        <h2 className="text-3xl font-bold text-blue-700 text-center mb-6">
           📋 Vardiya Kayıt Formu
         </h2>
 
-        {/* Üst Bilgiler */}
-        <div className="grid md:grid-cols-3 gap-5 mb-6">
+        <div className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-1">Tarih</label>
             <input
@@ -343,7 +342,7 @@ function App() {
               value={formData.tarih}
               onChange={handleChange}
               required
-              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
             />
           </div>
 
@@ -354,7 +353,7 @@ function App() {
               value={formData.vardiya}
               onChange={handleChange}
               required
-              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
             >
               <option value="">Seçiniz</option>
               <option value="1">1</option>
@@ -371,7 +370,7 @@ function App() {
               value={formData.hat}
               onChange={handleChange}
               required
-              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
             >
               <option value="">Seçiniz</option>
               <option value="R1">R1</option>
@@ -381,18 +380,16 @@ function App() {
           </div>
         </div>
 
-        {/* Açıklama Alanları */}
-        <h3 className="text-xl font-semibold text-blue-500 mb-4 border-b pb-2">
+        <h3 className="text-xl font-semibold text-blue-600 mb-2 border-b pb-1">
           Açıklamalar
         </h3>
 
-        <div className="space-y-5">
+        <div className="space-y-4">
           {aciklamalar.map((item) => (
             <div
               key={item.id}
-              className="bg-gray-50 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
+              className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
             >
-              {/* Açıklama alanı hem yazılabilir hem datalist ile */}
               <input
                 type="text"
                 list={`aciklama-list-${item.id}`}
@@ -401,7 +398,7 @@ function App() {
                 onChange={(e) =>
                   handleAciklamaChange(item.id, "aciklama", e.target.value)
                 }
-                className="border border-gray-300 rounded-lg p-2 w-full mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
+                className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
               />
               <datalist id={`aciklama-list-${item.id}`}>
                 {aciklamaSecenekleri.map((secenek, idx) => (
@@ -409,48 +406,46 @@ function App() {
                 ))}
               </datalist>
 
-              <div className="grid md:grid-cols-3 gap-3">
-                <input
-                  type="text"
-                  placeholder="Personel"
-                  value={item.personel}
-                  onChange={(e) =>
-                    handleAciklamaChange(item.id, "personel", e.target.value)
-                  }
-                  className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
-                />
+              <input
+                type="text"
+                placeholder="Personel"
+                value={item.personel}
+                onChange={(e) =>
+                  handleAciklamaChange(item.id, "personel", e.target.value)
+                }
+                className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+              />
 
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="Hata Tekrar Sayısı"
-                  value={item.adet}
-                  onChange={(e) =>
-                    handleAciklamaChange(item.id, "adet", e.target.value)
-                  }
-                  className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 outline-none"
-                />
+              <input
+                type="number"
+                min="1"
+                placeholder="Adet"
+                value={item.adet}
+                onChange={(e) =>
+                  handleAciklamaChange(item.id, "adet", e.target.value)
+                }
+                className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+              />
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFotoSec(item.id, e)}
-                  className="w-full text-gray-600"
-                />
-              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFotoSec(item.id, e)}
+                className="w-full mb-2 text-gray-600"
+              />
 
               {item.preview && (
                 <img
                   src={item.preview}
                   alt="Önizleme"
-                  className="mt-3 rounded-lg shadow-sm max-h-40 border"
+                  className="mt-2 rounded-lg shadow-sm max-h-40 border"
                 />
               )}
 
               <button
                 type="button"
                 onClick={() => satirSil(item.id)}
-                className="mt-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition"
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition"
               >
                 Satırı Sil
               </button>
@@ -458,11 +453,10 @@ function App() {
           ))}
         </div>
 
-        {/* Yeni Satır ve Kaydet Butonları */}
         <button
           type="button"
           onClick={yeniSatir}
-          className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition"
+          className="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition"
         >
           + Yeni Satır Ekle
         </button>
@@ -470,39 +464,11 @@ function App() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full mt-4 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
-            loading
-              ? "bg-blue-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
+          className={`w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
+            loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
-          {loading ? (
-            <>
-              <svg
-                className="animate-spin mr-2 h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-              </svg>
-              Kaydediliyor...
-            </>
-          ) : (
-            "Kaydet"
-          )}
+          {loading ? "Kaydediliyor..." : "Kaydet"}
         </button>
       </form>
     </div>
