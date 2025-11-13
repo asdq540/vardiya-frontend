@@ -231,6 +231,16 @@ const aciklamaSecenekleri = [
   "vana vidası yarım"
 ];
 
+
+const kalitePersoneliSecenekleri = [
+  "Ahmet Yılmaz",
+  "Ayşe Demir",
+  "Mehmet Kaya",
+  "Fatma Şahin",
+  "Ali Vural"
+];
+
+
 function App() {
   const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "", kalitePersoneli: "" });
   const [aciklamalar, setAciklamalar] = useState([
@@ -363,17 +373,23 @@ function App() {
             </select>
           </div>
                 <div>
+<div>
   <label className="block text-gray-700 font-medium mb-1">Kalite Personeli</label>
   <input
-    type="text"
+    list="kalite-personel-list"
     name="kalitePersoneli"
-    value={formData.kalitePersoneli}
+    value={formData.kalitePersoneli || ""}
     onChange={handleChange}
-    placeholder="Kalite personelinin adını giriniz"
-    required
+    placeholder="Seçiniz veya yazın..."
     className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
   />
+  <datalist id="kalite-personel-list">
+    {kalitePersoneliSecenekleri.map((isim, idx) => (
+      <option key={idx} value={isim} />
+    ))}
+  </datalist>
 </div>
+
 
 
           <div>
