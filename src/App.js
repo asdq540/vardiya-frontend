@@ -232,7 +232,7 @@ const aciklamaSecenekleri = [
 ];
 
 function App() {
-  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "" });
+  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "", kalitePersoneli: "" });
   const [aciklamalar, setAciklamalar] = useState([
     { id: Date.now(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" },
   ]);
@@ -362,6 +362,19 @@ function App() {
               <option value="4">4</option>
             </select>
           </div>
+                <div>
+  <label className="block text-gray-700 font-medium mb-1">Kalite Personeli</label>
+  <input
+    type="text"
+    name="kalitePersoneli"
+    value={formData.kalitePersoneli}
+    onChange={handleChange}
+    placeholder="Kalite personelinin adını giriniz"
+    required
+    className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+  />
+</div>
+
 
           <div>
             <label className="block text-gray-700 font-medium mb-1">Hat</label>
