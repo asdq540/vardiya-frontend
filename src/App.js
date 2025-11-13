@@ -231,7 +231,6 @@ const aciklamaSecenekleri = [
   "vana vidası yarım"
 ];
 
-
 const kalitePersoneliSecenekleri = [
   "AYDAN ÇATAL",
   "AYSİN ARSLAN",
@@ -390,7 +389,7 @@ function App() {
           📋 Hat Kalite Formu
         </h2>
 
-        {/* === ÜST ALANLAR === */}
+        {/* Üst alanlar */}
         <div className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-1">Tarih</label>
@@ -456,7 +455,7 @@ function App() {
           </div>
         </div>
 
-        {/* === AÇIKLAMALAR === */}
+        {/* Açıklamalar */}
         <h3 className="text-xl font-semibold text-blue-600 mb-2 border-b pb-1">
           Açıklamalar
         </h3>
@@ -467,7 +466,6 @@ function App() {
               key={item.id}
               className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
             >
-              {/* Açıklama alanı */}
               <input
                 type="text"
                 list={`aciklama-list-${item.id}`}
@@ -484,7 +482,6 @@ function App() {
                 ))}
               </datalist>
 
-              {/* Hatayı Yapan Personel */}
               {isMobile ? (
                 <select
                   value={item.personel}
@@ -519,7 +516,6 @@ function App() {
                 </>
               )}
 
-              {/* Adet */}
               <input
                 type="number"
                 min="1"
@@ -531,7 +527,6 @@ function App() {
                 className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
               />
 
-              {/* Foto */}
               <input
                 type="file"
                 accept="image/*"
@@ -578,42 +573,19 @@ function App() {
         >
           {loading ? "Kaydediliyor..." : "Kaydet"}
         </button>
+
+        {/* Yeni link butonu */}
+        <a
+          href="https://asdq540.github.io/kalite/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white bg-green-600 hover:bg-green-700 transition"
+        >
+          Kalite Sayfasına Git
+        </a>
       </form>
     </div>
   );
 }
-<button
-  type="submit"
-  disabled={loading}
-  className={`w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
-    loading
-      ? "bg-blue-400 cursor-not-allowed"
-      : "bg-blue-600 hover:bg-blue-700"
-  }`}
->
-  {loading ? "Kaydediliyor..." : "Kaydet"}
-</button>
-
-<button
-  type="submit"
-  disabled={loading}
-  className={`w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
-    loading
-      ? "bg-blue-400 cursor-not-allowed"
-      : "bg-blue-600 hover:bg-blue-700"
-  }`}
->
-  {loading ? "Kaydediliyor..." : "Kaydet"}
-</button>
-
-{/* Yeni link butonu */}
-<a
-  href="https://asdq540.github.io/kalite/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white bg-green-600 hover:bg-green-700 transition"
->
-  Kalite Sayfasına Git
-</a>
 
 export default App;
