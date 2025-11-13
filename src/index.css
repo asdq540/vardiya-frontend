@@ -2,3 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 body { font-family: 'Inter', sans-serif; }
+/* input[list] alanlarında ok simgesini her zaman görünür yap */
+input[list]::-webkit-calendar-picker-indicator {
+  opacity: 1 !important;
+  display: block !important;
+  cursor: pointer;
+}
+
+/* Ekstra: okun boyutunu ve hizasını düzenle */
+input[list]::-webkit-calendar-picker-indicator {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+
+/* Firefox uyumu için */
+input[list] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M0 0 L6 8 L12 0 Z' fill='%23666'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 30px;
+}
