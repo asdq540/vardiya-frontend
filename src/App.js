@@ -477,15 +477,27 @@ function App() {
                 ))}
               </datalist>
 
-              <input
-                type="text"
-                placeholder="Hatayı Yapan Personel"
-                value={item.personel}
-                onChange={(e) =>
-                  handleAciklamaChange(item.id, "personel", e.target.value)
-                }
-                className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
-              />
+             <input
+  list="personel-list"
+  placeholder="Hatayı Yapan Personel"
+  value={item.personel}
+  onChange={(e) =>
+    handleAciklamaChange(item.id, "personel", e.target.value)
+  }
+  className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+/>
+<datalist id="personel-list">
+  {[
+    "Picking",
+    "HX",
+    "Boyhane",
+    "Depo",
+    
+  ].map((isim, idx) => (
+    <option key={idx} value={isim} />
+  ))}
+</datalist>
+
 
               <input
                 type="number"
