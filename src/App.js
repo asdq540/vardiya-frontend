@@ -497,8 +497,6 @@ function App() {
   ))}
 </datalist>
 
-
-                </>
               )}
 
               <input
