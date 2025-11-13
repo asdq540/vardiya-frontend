@@ -330,7 +330,7 @@ function App() {
         className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg space-y-6"
       >
         <h2 className="text-3xl font-bold text-blue-700 text-center mb-6">
-          📋 Vardiya Kayıt Formu
+          📋 Hat Kalite Formu
         </h2>
 
         <div className="space-y-4">
