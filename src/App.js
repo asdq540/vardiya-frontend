@@ -482,37 +482,22 @@ function App() {
                 ))}
               </datalist>
 
-              {isMobile ? (
-                <select
-                  value={item.personel}
-                  onChange={(e) =>
-                    handleAciklamaChange(item.id, "personel", e.target.value)
-                  }
-                  className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none bg-white"
-                >
-                  <option value="">Hatayı Yapan Personel</option>
-                  {personelSecenekleri.map((isim, idx) => (
-                    <option key={idx} value={isim}>
-                      {isim}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <>
-                  <input
-                    list="personel-list"
-                    placeholder="Hatayı Yapan Personel"
-                    value={item.personel}
-                    onChange={(e) =>
-                      handleAciklamaChange(item.id, "personel", e.target.value)
-                    }
-                    className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
-                  />
-                  <datalist id="personel-list">
-                    {personelSecenekleri.map((isim, idx) => (
-                      <option key={idx} value={isim} />
-                    ))}
-                  </datalist>
+           <input
+  list="personel-list"
+  placeholder="Hatayı Yapan Personel"
+  value={item.personel}
+  onChange={(e) =>
+    handleAciklamaChange(item.id, "personel", e.target.value)
+  }
+  className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+/>
+<datalist id="personel-list">
+  {personelSecenekleri.map((isim, idx) => (
+    <option key={idx} value={isim} />
+  ))}
+</datalist>
+
+
                 </>
               )}
 
