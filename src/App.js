@@ -415,20 +415,21 @@ function App() {
                
 <div>
   <label className="block text-gray-700 font-medium mb-1">Kalite Personeli</label>
-  <input
-    list="kalite-personel-list"
+  <select
     name="kalitePersoneli"
     value={formData.kalitePersoneli || ""}
     onChange={handleChange}
-    placeholder="Seçiniz veya yazın..."
-    className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
-  />
-  <datalist id="kalite-personel-list">
+    className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none bg-white"
+  >
+    <option value="">Seçiniz...</option>
     {kalitePersoneliSecenekleri.map((isim, idx) => (
-      <option key={idx} value={isim} />
+      <option key={idx} value={isim}>
+        {isim}
+      </option>
     ))}
-  </datalist>
+  </select>
 </div>
+
 
 
 
