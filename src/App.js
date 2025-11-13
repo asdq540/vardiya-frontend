@@ -279,10 +279,15 @@ const kalitePersoneliSecenekleri = [
   "Zühal YAR"
 ];
 
-
+const personelSecenekleri = ["Picking", "HX", "Boyhane", "Depo"];
 
 function App() {
-  const [formData, setFormData] = useState({ tarih: "", vardiya: "", hat: "", kalitePersoneli: "" });
+  const [formData, setFormData] = useState({
+    tarih: "",
+    vardiya: "",
+    hat: "",
+    kalitePersoneli: "",
+  });
   const [aciklamalar, setAciklamalar] = useState([
     { id: Date.now(), aciklama: "", personel: "", adet: 1, foto: null, preview: "" },
   ]);
@@ -373,6 +378,8 @@ function App() {
     setLoading(false);
   };
 
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center items-start py-10 px-4">
       <form
@@ -383,6 +390,7 @@ function App() {
           📋 Hat Kalite Formu
         </h2>
 
+        {/* === ÜST ALANLAR === */}
         <div className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-1">Tarih</label>
@@ -403,7 +411,7 @@ function App() {
               value={formData.vardiya}
               onChange={handleChange}
               required
-              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none bg-white"
             >
               <option value="">Seçiniz</option>
               <option value="1">1</option>
@@ -412,26 +420,23 @@ function App() {
               <option value="4">4</option>
             </select>
           </div>
-               
-<div>
-  <label className="block text-gray-700 font-medium mb-1">Kalite Personeli</label>
-  <select
-    name="kalitePersoneli"
-    value={formData.kalitePersoneli || ""}
-    onChange={handleChange}
-    className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none bg-white"
-  >
-    <option value="">Seçiniz...</option>
-    {kalitePersoneliSecenekleri.map((isim, idx) => (
-      <option key={idx} value={isim}>
-        {isim}
-      </option>
-    ))}
-  </select>
-</div>
 
-
-
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Kalite Personeli</label>
+            <select
+              name="kalitePersoneli"
+              value={formData.kalitePersoneli || ""}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none bg-white"
+            >
+              <option value="">Seçiniz...</option>
+              {kalitePersoneliSecenekleri.map((isim, idx) => (
+                <option key={idx} value={isim}>
+                  {isim}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label className="block text-gray-700 font-medium mb-1">Hat</label>
@@ -440,7 +445,7 @@ function App() {
               value={formData.hat}
               onChange={handleChange}
               required
-              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none"
+              className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-300 outline-none bg-white"
             >
               <option value="">Seçiniz</option>
               <option value="R1">R1</option>
@@ -451,6 +456,7 @@ function App() {
           </div>
         </div>
 
+        {/* === AÇIKLAMALAR === */}
         <h3 className="text-xl font-semibold text-blue-600 mb-2 border-b pb-1">
           Açıklamalar
         </h3>
@@ -461,6 +467,7 @@ function App() {
               key={item.id}
               className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
             >
+              {/* Açıklama alanı */}
               <input
                 type="text"
                 list={`aciklama-list-${item.id}`}
@@ -477,28 +484,42 @@ function App() {
                 ))}
               </datalist>
 
-             <input
-  list="personel-list"
-  placeholder="Hatayı Yapan Personel"
-  value={item.personel}
-  onChange={(e) =>
-    handleAciklamaChange(item.id, "personel", e.target.value)
-  }
-  className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
-/>
-<datalist id="personel-list">
-  {[
-    "Picking",
-    "HX",
-    "Boyhane",
-    "Depo",
-    
-  ].map((isim, idx) => (
-    <option key={idx} value={isim} />
-  ))}
-</datalist>
+              {/* Hatayı Yapan Personel */}
+              {isMobile ? (
+                <select
+                  value={item.personel}
+                  onChange={(e) =>
+                    handleAciklamaChange(item.id, "personel", e.target.value)
+                  }
+                  className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none bg-white"
+                >
+                  <option value="">Hatayı Yapan Personel</option>
+                  {personelSecenekleri.map((isim, idx) => (
+                    <option key={idx} value={isim}>
+                      {isim}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <>
+                  <input
+                    list="personel-list"
+                    placeholder="Hatayı Yapan Personel"
+                    value={item.personel}
+                    onChange={(e) =>
+                      handleAciklamaChange(item.id, "personel", e.target.value)
+                    }
+                    className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
+                  />
+                  <datalist id="personel-list">
+                    {personelSecenekleri.map((isim, idx) => (
+                      <option key={idx} value={isim} />
+                    ))}
+                  </datalist>
+                </>
+              )}
 
-
+              {/* Adet */}
               <input
                 type="number"
                 min="1"
@@ -510,6 +531,7 @@ function App() {
                 className="border border-gray-300 rounded-lg p-2 w-full mb-2 focus:ring-2 focus:ring-blue-300 outline-none"
               />
 
+              {/* Foto */}
               <input
                 type="file"
                 accept="image/*"
@@ -536,6 +558,7 @@ function App() {
           ))}
         </div>
 
+        {/* Butonlar */}
         <button
           type="button"
           onClick={yeniSatir}
@@ -548,7 +571,9 @@ function App() {
           type="submit"
           disabled={loading}
           className={`w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
-            loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
           {loading ? "Kaydediliyor..." : "Kaydet"}
