@@ -594,6 +594,26 @@ function App() {
   {loading ? "Kaydediliyor..." : "Kaydet"}
 </button>
 
+<button
+  type="submit"
+  disabled={loading}
+  className={`w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white transition ${
+    loading
+      ? "bg-blue-400 cursor-not-allowed"
+      : "bg-blue-600 hover:bg-blue-700"
+  }`}
+>
+  {loading ? "Kaydediliyor..." : "Kaydet"}
+</button>
 
+{/* Yeni link butonu */}
+<a
+  href="https://asdq540.github.io/kalite/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white bg-green-600 hover:bg-green-700 transition"
+>
+  Kalite Sayfasına Git
+</a>
 
 export default App;
