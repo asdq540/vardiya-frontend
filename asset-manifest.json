@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/vardiya-frontend/static/css/main.11fe6cc7.css",
-    "main.js": "/vardiya-frontend/static/js/main.75ee16db.js",
+    "main.css": "/vardiya-frontend/static/css/main.a3d31ea0.css",
+    "main.js": "/vardiya-frontend/static/js/main.d03a6d44.js",
     "index.html": "/vardiya-frontend/index.html",
-    "main.11fe6cc7.css.map": "/vardiya-frontend/static/css/main.11fe6cc7.css.map",
-    "main.75ee16db.js.map": "/vardiya-frontend/static/js/main.75ee16db.js.map"
+    "main.a3d31ea0.css.map": "/vardiya-frontend/static/css/main.a3d31ea0.css.map",
+    "main.d03a6d44.js.map": "/vardiya-frontend/static/js/main.d03a6d44.js.map"
   },
   "entrypoints": [
-    "static/css/main.11fe6cc7.css",
-    "static/js/main.75ee16db.js"
+    "static/css/main.a3d31ea0.css",
+    "static/js/main.d03a6d44.js"
   ]
 }
