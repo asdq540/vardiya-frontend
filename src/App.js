@@ -233,12 +233,52 @@ const aciklamaSecenekleri = [
 
 
 const kalitePersoneliSecenekleri = [
-  "Ahmet Yılmaz",
-  "Ayşe Demir",
-  "Mehmet Kaya",
-  "Fatma Şahin",
-  "Ali Vural"
+  "AYDAN ÇATAL",
+  "AYSİN ARSLAN",
+  "BEGÜM ARSLAN",
+  "BEKİR ÖLMEZ",
+  "BÜŞRA YILMAZ",
+  "EBRU SİLAHLI",
+  "ELİF EKİN",
+  "EMRE PITIRKAN",
+  "ENES KOL",
+  "ENES SAL",
+  "ERHAN NİZAM",
+  "FUNDA AKKOL",
+  "GÖZDE DÜŞÜNMEZ",
+  "GÜLER ÇAÇUR",
+  "GÜLER DURMUŞ",
+  "GÜLGÜN ÇAÇUR",
+  "HAZEL KAYHAN",
+  "HİKMET ÖMER ÇAKTI",
+  "Hülya GÖDEK",
+  "KADİR KARADENİZ",
+  "MEHMET HAMİ İDACI",
+  "MELAHAT BAŞTOR",
+  "MURAT BÜYÜKKAYA",
+  "MUSTAFA AFŞİN DİKİCİ",
+  "MUSTAFA YİĞİT",
+  "Mürvet  KAYIT",
+  "NURİ GÜZEL",
+  "NURULLAH ÇOBAN",
+  "SEDA İLGEÇ",
+  "SEHER BİLGİÇ",
+  "SERGÜL AYAR",
+  "Sevgi ÇANKAYA",
+  "SÜLEYMAN GÜRBÜZ",
+  "ŞABAN SÖNMEZ",
+  "TUĞÇE KORAL",
+  "UĞUR DEDE",
+  "UĞUR ÖZDEMİR",
+  "VOLKAN UYUMAZ",
+  "Yadikar KALK",
+  "YASİN ODUNCU",
+  "YUNUS EMRE BAYRAKTAR",
+  "YÜKSEL TOP",
+  "ZEKERİYA POLCUMCU",
+  "Zühal YAR"
 ];
+
 
 
 function App() {
