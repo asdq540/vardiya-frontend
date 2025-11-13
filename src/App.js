@@ -594,15 +594,6 @@ function App() {
   {loading ? "Kaydediliyor..." : "Kaydet"}
 </button>
 
-{/* Yeni link butonu */}
-<a
-  href="https://asdq540.github.io/kalite/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="w-full mt-2 py-3 rounded-lg font-semibold flex justify-center items-center text-white bg-green-600 hover:bg-green-700 transition"
->
-  Kalite Sayfasına Git
-</a>
 
 
 export default App;
