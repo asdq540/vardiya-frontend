@@ -409,7 +409,7 @@ function App() {
 
               <input
                 type="text"
-                placeholder="Personel"
+                placeholder="Hatayı Yapan Personel"
                 value={item.personel}
                 onChange={(e) =>
                   handleAciklamaChange(item.id, "personel", e.target.value)
