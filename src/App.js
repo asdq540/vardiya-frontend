@@ -279,7 +279,7 @@ const kalitePersoneliSecenekleri = [
   "Zühal YAR"
 ];
 
-const personelSecenekleri = ["Picking", "HX", "Boyhane", "Depo"];
+const personelSecenekleri = ["Picking", "HX", "Boyahane", "Depo"];
 
 function App() {
   const [formData, setFormData] = useState({
