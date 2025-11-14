@@ -557,6 +557,14 @@ function App() {
         >
           {loading ? "Kaydediliyor..." : "Kaydet"}
         </button>
+{loading && (
+  <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded-xl shadow-lg text-lg font-semibold">
+      📸 Fotoğraflar yükleniyor, lütfen bekleyin...
+    </div>
+  </div>
+)}
+
 
         {/* Yeni link butonu */}
         <a
