@@ -1,23 +1,6 @@
 import React, { useState } from "react";
 import imageCompression from "browser-image-compression";
 import "./index.css";
-const [isSubmitting, setIsSubmitting] = useState(false);
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  setLoading(true); // buton kilitlensin, loading görünsün
-
-  try {
-    // Fotoğrafların upload edildiği işlemler
-    // Formun Firestore / API'ye gönderilmesi
-    await formuKaydet(); 
-  } catch (error) {
-    console.error("Hata:", error);
-  }
-
-  setLoading(false); // işlem bitti
-};
 
 
 const aciklamaSecenekleri = [
