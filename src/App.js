@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import imageCompression from "browser-image-compression";
 import "./index.css";
-
+const [isSubmitting, setIsSubmitting] = useState(false);
 const aciklamaSecenekleri = [
   "4 yollu izolasyon açık",
   "4 yollu izolasyon eksik",
